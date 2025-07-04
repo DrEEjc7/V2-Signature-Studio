@@ -1,4 +1,689 @@
-uploadElement.addEventListener('drop', (e) => {
+/**
+ * Signature Studio - Professional Email Signature Generator
+ * Best-in-class JavaScript application with modern architecture
+ * Version: 2.0
+ * Author: Dee7 Studio
+ */
+
+'use strict';
+
+/* ========================================
+   SIGNATURE GENERATOR CLASS
+======================================== */
+
+class SignatureGenerator {
+  constructor() {
+    // Application state
+    this.state = {
+      theme: 'light',
+      currentTemplate: 'modern',
+      currentView: 'desktop',
+      imageDataUrl: null,
+      formData: {},
+      isLoading: false,
+      isDirty: false
+    };
+
+    // Template configurations
+    this.templates = {
+      modern: {
+        imageStyle: 'rounded',
+        layout: 'horizontal',
+        showTitle: true,
+        showCompany: true,
+        companyWeight: 'normal',
+        style: 'modern',
+        description: 'Clean lines with colored accent border'
+      },
+      classic: {
+        imageStyle: 'square',
+        layout: 'horizontal',
+        showTitle: true,
+        showCompany: true,
+        companyWeight: 'normal',
+        style: 'classic',
+        description: 'Traditional professional layout'
+      },
+      minimal: {
+        imageStyle: 'hidden',
+        layout: 'text-only',
+        showTitle: false,
+        showCompany: false,
+        companyWeight: 'normal',
+        style: 'minimal',
+        description: 'Clean, distraction-free text design'
+      },
+      corporate: {
+        imageStyle: 'square',
+        layout: 'vertical',
+        showTitle: true,
+        showCompany: true,
+        companyWeight: 'bold',
+        style: 'corporate',
+        description: 'Formal business-focused with border'
+      },
+      professional: {
+        imageStyle: 'rounded',
+        layout: 'horizontal',
+        showTitle: true,
+        showCompany: true,
+        companyWeight: 'semibold',
+        style: 'professional',
+        description: 'Elegant with gradient background'
+      },
+      executive: {
+        imageStyle: 'rounded',
+        layout: 'horizontal',
+        showTitle: true,
+        showCompany: true,
+        companyWeight: 'bold',
+        style: 'executive',
+        description: 'Premium design with shadows'
+      }
+    };
+
+    // Social media platform configurations
+    this.socialPlatforms = {
+      linkedin: {
+        icon: 'https://ik.imagekit.io/dee7studio/Icons/LinkedIn.svg?updatedAt=1751101326668',
+        name: 'LinkedIn',
+        placeholder: 'linkedin.com/in/username',
+        baseUrl: 'https://linkedin.com'
+      },
+      twitter: {
+        icon: 'https://ik.imagekit.io/dee7studio/Icons/Reddit.svg?updatedAt=1751102199116',
+        name: 'Twitter/X',
+        placeholder: 'twitter.com/username',
+        baseUrl: 'https://twitter.com'
+      },
+      github: {
+        icon: 'https://ik.imagekit.io/dee7studio/Icons/GitHub.svg?updatedAt=1751618331133',
+        name: 'GitHub',
+        placeholder: 'github.com/username',
+        baseUrl: 'https://github.com'
+      },
+      instagram: {
+        icon: 'https://ik.imagekit.io/dee7studio/Icons/Instagram.svg?updatedAt=1751100484264',
+        name: 'Instagram',
+        placeholder: 'instagram.com/username',
+        baseUrl: 'https://instagram.com'
+      },
+      facebook: {
+        icon: 'https://ik.imagekit.io/dee7studio/Icons/Facebook.svg?updatedAt=1751101326689',
+        name: 'Facebook',
+        placeholder: 'facebook.com/username',
+        baseUrl: 'https://facebook.com'
+      },
+      tiktok: {
+        icon: 'https://ik.imagekit.io/dee7studio/Icons/Tok%20Tok.svg?updatedAt=1751101326673',
+        name: 'TikTok',
+        placeholder: 'tiktok.com/@username',
+        baseUrl: 'https://tiktok.com'
+      }
+    };
+
+    // Contact icons
+    this.contactIcons = {
+      phone: 'https://ik.imagekit.io/dee7studio/Icons/Phone.svg?updatedAt=1751618330969',
+      website: 'https://ik.imagekit.io/dee7studio/Icons/Website.svg?updatedAt=1751618331133',
+      email: 'https://ik.imagekit.io/dee7studio/Icons/Website.svg?updatedAt=1751618331133'
+    };
+
+    // Performance optimizations
+    this.debounceTimer = null;
+    this.rafId = null;
+    
+    // Placeholder image
+    this.placeholderImage = this.generatePlaceholderSVG();
+
+    // Initialize application
+    this.init();
+  }
+
+  /* ========================================
+     INITIALIZATION METHODS
+  ======================================== */
+
+  /**
+   * Initialize the application
+   */
+  init() {
+    try {
+      this.cacheElements();
+      this.loadSavedSettings();
+      this.bindEvents();
+      this.updatePreview();
+      this.updateProgress();
+      this.setCurrentYear();
+      this.addInitialAnimations();
+      
+      // Performance monitoring
+      this.logPerformanceMetrics();
+      
+      console.log('🚀 Signature Studio initialized successfully');
+    } catch (error) {
+      console.error('❌ Failed to initialize Signature Studio:', error);
+      this.showNotification('Failed to initialize application', 'error');
+    }
+  }
+
+  /**
+   * Cache DOM elements for performance
+   */
+  cacheElements() {
+    // Create elements cache
+    this.elements = {};
+    
+    // Essential elements
+    const essentialSelectors = {
+      // Theme
+      themeToggle: '#themeToggle',
+      
+      // Form inputs
+      firstName: '#firstName',
+      lastName: '#lastName',
+      title: '#title',
+      company: '#company',
+      email: '#email',
+      phone: '#phone',
+      website: '#website',
+      colorPicker: '#colorPicker',
+      colorText: '#colorText',
+      
+      // Social media inputs
+      linkedin: '#linkedin',
+      twitter: '#twitter',
+      github: '#github',
+      instagram: '#instagram',
+      facebook: '#facebook',
+      tiktok: '#tiktok',
+      
+      // Image upload
+      imageInput: '#imageInput',
+      imageUpload: '#imageUpload',
+      
+      // Preview elements
+      signaturePreview: '#signaturePreview',
+      signatureContent: '#signatureContent',
+      progressFill: '#progressFill',
+      progressText: '#progressText',
+      
+      // Action buttons
+      copyHtmlBtn: '#copyHtmlBtn',
+      copyTextBtn: '#copyTextBtn',
+      downloadBtn: '#downloadBtn',
+      
+      // Footer
+      currentYear: '#currentYear'
+    };
+
+    // Cache elements with error handling
+    Object.entries(essentialSelectors).forEach(([key, selector]) => {
+      const element = document.querySelector(selector);
+      if (element) {
+        this.elements[key] = element;
+      } else {
+        console.warn(`⚠️ Element not found: ${selector}`);
+      }
+    });
+
+    // Cache element collections
+    this.elements.templateBtns = document.querySelectorAll('.template-btn');
+    this.elements.viewBtns = document.querySelectorAll('.view-btn');
+    this.elements.formInputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="url"]');
+
+    // Validate critical elements
+    this.validateCriticalElements();
+  }
+
+  /**
+   * Validate that critical elements exist
+   */
+  validateCriticalElements() {
+    const critical = ['signatureContent', 'progressFill'];
+    const missing = critical.filter(key => !this.elements[key]);
+    
+    if (missing.length > 0) {
+      throw new Error(`Critical elements missing: ${missing.join(', ')}`);
+    }
+  }
+
+  /**
+   * Load saved settings from localStorage
+   */
+  loadSavedSettings() {
+    try {
+      // Load theme
+      const savedTheme = localStorage.getItem('signature-studio-theme') || 'light';
+      this.state.theme = savedTheme;
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      this.updateThemeToggle();
+
+      // Load form data
+      const savedFormData = localStorage.getItem('signature-studio-form-data');
+      if (savedFormData) {
+        const formData = JSON.parse(savedFormData);
+        this.restoreFormData(formData);
+      }
+
+      // Load selected template
+      const savedTemplate = localStorage.getItem('signature-studio-template');
+      if (savedTemplate && this.templates[savedTemplate]) {
+        this.state.currentTemplate = savedTemplate;
+        this.updateTemplateSelection();
+      }
+    } catch (error) {
+      console.warn('⚠️ Failed to load saved settings:', error);
+    }
+  }
+
+  /**
+   * Restore form data from saved state
+   */
+  restoreFormData(formData) {
+    Object.entries(formData).forEach(([key, value]) => {
+      const element = this.elements[key];
+      if (element && value) {
+        element.value = value;
+        this.updateCharCount(element);
+      }
+    });
+  }
+
+  /**
+   * Update theme toggle button state
+   */
+  updateThemeToggle() {
+    const icon = this.elements.themeToggle?.querySelector('.theme-icon');
+    if (icon) {
+      icon.textContent = this.state.theme === 'dark' ? '🌞' : '🌙';
+    }
+  }
+
+  /**
+   * Update template selection visual state
+   */
+  updateTemplateSelection() {
+    this.elements.templateBtns?.forEach(btn => {
+      const isActive = btn.dataset.template === this.state.currentTemplate;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-checked', isActive.toString());
+    });
+  }
+
+  /* ========================================
+     EVENT HANDLING
+  ======================================== */
+
+  /**
+   * Bind all event listeners
+   */
+  bindEvents() {
+    // Theme toggle
+    this.elements.themeToggle?.addEventListener('click', () => this.toggleTheme());
+
+    // Form inputs with optimized debouncing
+    this.bindFormInputEvents();
+
+    // Color inputs
+    this.bindColorInputEvents();
+
+    // Image upload
+    this.bindImageUploadEvents();
+
+    // Template selection
+    this.bindTemplateEvents();
+
+    // View controls
+    this.bindViewEvents();
+
+    // Export buttons
+    this.bindExportEvents();
+
+    // Keyboard shortcuts
+    this.bindKeyboardEvents();
+
+    // Window events
+    this.bindWindowEvents();
+
+    console.log('✅ Event listeners bound successfully');
+  }
+
+  /**
+   * Bind form input events with optimized performance
+   */
+  bindFormInputEvents() {
+    const inputFields = [
+      'firstName', 'lastName', 'title', 'company',
+      'email', 'phone', 'website', 'linkedin', 'twitter', 
+      'github', 'instagram', 'facebook', 'tiktok'
+    ];
+
+    inputFields.forEach(fieldName => {
+      const element = this.elements[fieldName];
+      if (element) {
+        // Input event with debouncing
+        element.addEventListener('input', (e) => this.handleInputChange(e));
+        
+        // Blur event for validation
+        element.addEventListener('blur', () => this.validateInput(element));
+        
+        // Focus event for analytics
+        element.addEventListener('focus', () => this.handleInputFocus(element));
+      }
+    });
+  }
+
+  /**
+   * Bind color input events
+   */
+  bindColorInputEvents() {
+    this.elements.colorPicker?.addEventListener('input', (e) => {
+      this.elements.colorText.value = e.target.value;
+      this.schedulePreviewUpdate();
+    });
+
+    this.elements.colorText?.addEventListener('input', (e) => {
+      const color = e.target.value;
+      if (this.isValidHexColor(color)) {
+        this.elements.colorPicker.value = color;
+        this.schedulePreviewUpdate();
+      }
+    });
+  }
+
+  /**
+   * Bind template selection events
+   */
+  bindTemplateEvents() {
+    this.elements.templateBtns?.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const template = btn.dataset.template;
+        if (template && this.templates[template]) {
+          this.switchTemplate(template);
+        }
+      });
+
+      // Keyboard navigation
+      btn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          btn.click();
+        }
+      });
+    });
+  }
+
+  /**
+   * Bind view control events
+   */
+  bindViewEvents() {
+    this.elements.viewBtns?.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const view = btn.dataset.view;
+        if (view) {
+          this.switchView(view);
+        }
+      });
+    });
+  }
+
+  /**
+   * Bind export button events
+   */
+  bindExportEvents() {
+    this.elements.copyHtmlBtn?.addEventListener('click', () => this.copySignature('html'));
+    this.elements.copyTextBtn?.addEventListener('click', () => this.copySignature('text'));
+    this.elements.downloadBtn?.addEventListener('click', () => this.downloadSignature());
+  }
+
+  /**
+   * Bind keyboard shortcuts
+   */
+  bindKeyboardEvents() {
+    document.addEventListener('keydown', (e) => {
+      // Ctrl/Cmd + K to focus first input
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        this.elements.firstName?.focus();
+      }
+
+      // Ctrl/Cmd + Enter to copy HTML signature
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        this.copySignature('html');
+      }
+
+      // Escape to clear focus
+      if (e.key === 'Escape') {
+        document.activeElement?.blur();
+      }
+
+      // Ctrl/Cmd + S to save (prevent default)
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        this.saveFormData();
+        this.showNotification('Progress saved locally', 'success');
+      }
+    });
+  }
+
+  /**
+   * Bind window events
+   */
+  bindWindowEvents() {
+    // Handle page visibility changes
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        this.updatePreview();
+      }
+    });
+
+    // Handle window resize with debouncing
+    window.addEventListener('resize', this.debounce(() => {
+      this.updatePreview();
+    }, 250));
+
+    // Handle beforeunload for unsaved changes
+    window.addEventListener('beforeunload', (e) => {
+      if (this.state.isDirty) {
+        e.preventDefault();
+        e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+        return e.returnValue;
+      }
+    });
+  }
+
+  /* ========================================
+     INPUT HANDLING METHODS
+  ======================================== */
+
+  /**
+   * Handle input change with optimized debouncing
+   */
+  handleInputChange(event) {
+    const { target } = event;
+    
+    // Update character count immediately
+    this.updateCharCount(target);
+    
+    // Mark as dirty
+    this.state.isDirty = true;
+    
+    // Schedule preview update with debouncing
+    this.schedulePreviewUpdate();
+    
+    // Auto-save form data
+    this.scheduleAutoSave();
+  }
+
+  /**
+   * Handle input focus for analytics
+   */
+  handleInputFocus(element) {
+    // Track field interaction for analytics
+    const fieldName = element.id;
+    console.log(`📊 Field focused: ${fieldName}`);
+  }
+
+  /**
+   * Schedule preview update with optimized debouncing
+   */
+  schedulePreviewUpdate() {
+    // Cancel previous update
+    if (this.rafId) {
+      cancelAnimationFrame(this.rafId);
+    }
+    
+    // Clear existing timer
+    clearTimeout(this.debounceTimer);
+    
+    // Schedule new update
+    this.debounceTimer = setTimeout(() => {
+      this.rafId = requestAnimationFrame(() => {
+        this.updateFormData();
+        this.updatePreview();
+        this.updateProgress();
+      });
+    }, 150);
+  }
+
+  /**
+   * Schedule auto-save with debouncing
+   */
+  scheduleAutoSave() {
+    clearTimeout(this.autoSaveTimer);
+    this.autoSaveTimer = setTimeout(() => {
+      this.saveFormData();
+    }, 2000);
+  }
+
+  /**
+   * Update character count display
+   */
+  updateCharCount(input) {
+    const charCount = input.nextElementSibling;
+    if (charCount?.classList.contains('char-count')) {
+      const current = input.value.length;
+      const max = input.maxLength || 0;
+      charCount.textContent = `${current}/${max}`;
+      
+      // Add warning styling if near limit
+      charCount.classList.toggle('warning', current > max * 0.8);
+    }
+  }
+
+  /**
+   * Validate input field
+   */
+  validateInput(input) {
+    const isValid = input.checkValidity();
+    input.classList.toggle('error', !isValid);
+    
+    if (!isValid) {
+      this.showInputError(input);
+    }
+    
+    return isValid;
+  }
+
+  /**
+   * Show input validation error
+   */
+  showInputError(input) {
+    const fieldName = input.id;
+    const message = this.getValidationMessage(input);
+    this.showNotification(message, 'error');
+  }
+
+  /**
+   * Get validation message for input
+   */
+  getValidationMessage(input) {
+    const fieldName = input.id;
+    const value = input.value;
+    
+    if (input.validity.valueMissing) {
+      return `${this.formatFieldName(fieldName)} is required`;
+    }
+    
+    if (input.validity.typeMismatch) {
+      return `Please enter a valid ${this.formatFieldName(fieldName)}`;
+    }
+    
+    if (input.validity.tooLong) {
+      return `${this.formatFieldName(fieldName)} is too long`;
+    }
+    
+    return `Please check your ${this.formatFieldName(fieldName)}`;
+  }
+
+  /**
+   * Format field name for display
+   */
+  formatFieldName(fieldName) {
+    return fieldName
+      .replace(/([A-Z])/g, ' $1')
+      .replace(/^./, str => str.toUpperCase());
+  }
+
+  /**
+   * Validate hex color
+   */
+  isValidHexColor(color) {
+    return /^#[0-9A-Fa-f]{6}$/.test(color);
+  }
+
+  /* ========================================
+     IMAGE HANDLING METHODS
+  ======================================== */
+
+  /**
+   * Bind image upload events
+   */
+  bindImageUploadEvents() {
+    const { imageUpload, imageInput } = this.elements;
+    
+    if (!imageUpload || !imageInput) return;
+
+    // Click to upload
+    imageUpload.addEventListener('click', () => imageInput.click());
+
+    // File input change
+    imageInput.addEventListener('change', (e) => {
+      if (e.target.files.length) {
+        this.handleImageFile(e.target.files[0]);
+      }
+    });
+
+    // Drag and drop events
+    this.bindDragDropEvents(imageUpload);
+
+    // Keyboard accessibility
+    imageUpload.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        imageInput.click();
+      }
+    });
+  }
+
+  /**
+   * Bind drag and drop events for image upload
+   */
+  bindDragDropEvents(uploadElement) {
+    uploadElement.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadElement.classList.add('dragover');
+    });
+
+    uploadElement.addEventListener('dragleave', (e) => {
+      if (!uploadElement.contains(e.relatedTarget)) {
+        uploadElement.classList.remove('dragover');
+      }
+    });
+
+    uploadElement.addEventListener('drop', (e) => {
       e.preventDefault();
       uploadElement.classList.remove('dragover');
 
@@ -1218,691 +1903,4 @@ if (typeof module !== 'undefined' && module.exports) {
 // AMD support
 if (typeof define === 'function' && define.amd) {
   define([], () => SignatureGenerator);
-}/**
- * Signature Studio - Professional Email Signature Generator
- * Best-in-class JavaScript application with modern architecture
- * Version: 2.0
- * Author: Dee7 Studio
- */
-
-'use strict';
-
-/* ========================================
-   SIGNATURE GENERATOR CLASS
-======================================== */
-
-class SignatureGenerator {
-  constructor() {
-    // Application state
-    this.state = {
-      theme: 'light',
-      currentTemplate: 'modern',
-      currentView: 'desktop',
-      imageDataUrl: null,
-      formData: {},
-      isLoading: false,
-      isDirty: false
-    };
-
-    // Template configurations
-    this.templates = {
-      modern: {
-        imageStyle: 'rounded',
-        layout: 'horizontal',
-        showTitle: true,
-        showCompany: true,
-        companyWeight: 'normal',
-        style: 'modern',
-        description: 'Clean lines with colored accent border'
-      },
-      classic: {
-        imageStyle: 'square',
-        layout: 'horizontal',
-        showTitle: true,
-        showCompany: true,
-        companyWeight: 'normal',
-        style: 'classic',
-        description: 'Traditional professional layout'
-      },
-      minimal: {
-        imageStyle: 'hidden',
-        layout: 'text-only',
-        showTitle: false,
-        showCompany: false,
-        companyWeight: 'normal',
-        style: 'minimal',
-        description: 'Clean, distraction-free text design'
-      },
-      corporate: {
-        imageStyle: 'square',
-        layout: 'vertical',
-        showTitle: true,
-        showCompany: true,
-        companyWeight: 'bold',
-        style: 'corporate',
-        description: 'Formal business-focused with border'
-      },
-      professional: {
-        imageStyle: 'rounded',
-        layout: 'horizontal',
-        showTitle: true,
-        showCompany: true,
-        companyWeight: 'semibold',
-        style: 'professional',
-        description: 'Elegant with gradient background'
-      },
-      executive: {
-        imageStyle: 'rounded',
-        layout: 'horizontal',
-        showTitle: true,
-        showCompany: true,
-        companyWeight: 'bold',
-        style: 'executive',
-        description: 'Premium design with shadows'
-      }
-    };
-
-    // Social media platform configurations
-    this.socialPlatforms = {
-      linkedin: {
-        icon: 'https://ik.imagekit.io/dee7studio/Icons/LinkedIn.svg?updatedAt=1751101326668',
-        name: 'LinkedIn',
-        placeholder: 'linkedin.com/in/username',
-        baseUrl: 'https://linkedin.com'
-      },
-      twitter: {
-        icon: 'https://ik.imagekit.io/dee7studio/Icons/Reddit.svg?updatedAt=1751102199116',
-        name: 'Twitter/X',
-        placeholder: 'twitter.com/username',
-        baseUrl: 'https://twitter.com'
-      },
-      github: {
-        icon: 'https://ik.imagekit.io/dee7studio/Icons/GitHub.svg?updatedAt=1751618331133',
-        name: 'GitHub',
-        placeholder: 'github.com/username',
-        baseUrl: 'https://github.com'
-      },
-      instagram: {
-        icon: 'https://ik.imagekit.io/dee7studio/Icons/Instagram.svg?updatedAt=1751100484264',
-        name: 'Instagram',
-        placeholder: 'instagram.com/username',
-        baseUrl: 'https://instagram.com'
-      },
-      facebook: {
-        icon: 'https://ik.imagekit.io/dee7studio/Icons/Facebook.svg?updatedAt=1751101326689',
-        name: 'Facebook',
-        placeholder: 'facebook.com/username',
-        baseUrl: 'https://facebook.com'
-      },
-      tiktok: {
-        icon: 'https://ik.imagekit.io/dee7studio/Icons/Tok%20Tok.svg?updatedAt=1751101326673',
-        name: 'TikTok',
-        placeholder: 'tiktok.com/@username',
-        baseUrl: 'https://tiktok.com'
-      }
-    };
-
-    // Contact icons
-    this.contactIcons = {
-      phone: 'https://ik.imagekit.io/dee7studio/Icons/Phone.svg?updatedAt=1751618330969',
-      website: 'https://ik.imagekit.io/dee7studio/Icons/Website.svg?updatedAt=1751618331133',
-      email: 'https://ik.imagekit.io/dee7studio/Icons/Website.svg?updatedAt=1751618331133'
-    };
-
-    // Performance optimizations
-    this.debounceTimer = null;
-    this.rafId = null;
-    
-    // Placeholder image
-    this.placeholderImage = this.generatePlaceholderSVG();
-
-    // Initialize application
-    this.init();
-  }
-
-  /* ========================================
-     INITIALIZATION METHODS
-  ======================================== */
-
-  /**
-   * Initialize the application
-   */
-  init() {
-    try {
-      this.cacheElements();
-      this.loadSavedSettings();
-      this.bindEvents();
-      this.updatePreview();
-      this.updateProgress();
-      this.setCurrentYear();
-      this.addInitialAnimations();
-      
-      // Performance monitoring
-      this.logPerformanceMetrics();
-      
-      console.log('🚀 Signature Studio initialized successfully');
-    } catch (error) {
-      console.error('❌ Failed to initialize Signature Studio:', error);
-      this.showNotification('Failed to initialize application', 'error');
-    }
-  }
-
-  /**
-   * Cache DOM elements for performance
-   */
-  cacheElements() {
-    // Create elements cache
-    this.elements = {};
-    
-    // Essential elements
-    const essentialSelectors = {
-      // Theme
-      themeToggle: '#themeToggle',
-      
-      // Form inputs
-      firstName: '#firstName',
-      lastName: '#lastName',
-      title: '#title',
-      company: '#company',
-      email: '#email',
-      phone: '#phone',
-      website: '#website',
-      colorPicker: '#colorPicker',
-      colorText: '#colorText',
-      
-      // Social media inputs
-      linkedin: '#linkedin',
-      twitter: '#twitter',
-      github: '#github',
-      instagram: '#instagram',
-      facebook: '#facebook',
-      tiktok: '#tiktok',
-      
-      // Image upload
-      imageInput: '#imageInput',
-      imageUpload: '#imageUpload',
-      
-      // Preview elements
-      signaturePreview: '#signaturePreview',
-      signatureContent: '#signatureContent',
-      progressFill: '#progressFill',
-      progressText: '#progressText',
-      
-      // Action buttons
-      copyHtmlBtn: '#copyHtmlBtn',
-      copyTextBtn: '#copyTextBtn',
-      downloadBtn: '#downloadBtn',
-      
-      // Footer
-      currentYear: '#currentYear'
-    };
-
-    // Cache elements with error handling
-    Object.entries(essentialSelectors).forEach(([key, selector]) => {
-      const element = document.querySelector(selector);
-      if (element) {
-        this.elements[key] = element;
-      } else {
-        console.warn(`⚠️ Element not found: ${selector}`);
-      }
-    });
-
-    // Cache element collections
-    this.elements.templateBtns = document.querySelectorAll('.template-btn');
-    this.elements.viewBtns = document.querySelectorAll('.view-btn');
-    this.elements.formInputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="url"]');
-
-    // Validate critical elements
-    this.validateCriticalElements();
-  }
-
-  /**
-   * Validate that critical elements exist
-   */
-  validateCriticalElements() {
-    const critical = ['signatureContent', 'progressFill'];
-    const missing = critical.filter(key => !this.elements[key]);
-    
-    if (missing.length > 0) {
-      throw new Error(`Critical elements missing: ${missing.join(', ')}`);
-    }
-  }
-
-  /**
-   * Load saved settings from localStorage
-   */
-  loadSavedSettings() {
-    try {
-      // Load theme
-      const savedTheme = localStorage.getItem('signature-studio-theme') || 'light';
-      this.state.theme = savedTheme;
-      document.documentElement.setAttribute('data-theme', savedTheme);
-      this.updateThemeToggle();
-
-      // Load form data
-      const savedFormData = localStorage.getItem('signature-studio-form-data');
-      if (savedFormData) {
-        const formData = JSON.parse(savedFormData);
-        this.restoreFormData(formData);
-      }
-
-      // Load selected template
-      const savedTemplate = localStorage.getItem('signature-studio-template');
-      if (savedTemplate && this.templates[savedTemplate]) {
-        this.state.currentTemplate = savedTemplate;
-        this.updateTemplateSelection();
-      }
-    } catch (error) {
-      console.warn('⚠️ Failed to load saved settings:', error);
-    }
-  }
-
-  /**
-   * Restore form data from saved state
-   */
-  restoreFormData(formData) {
-    Object.entries(formData).forEach(([key, value]) => {
-      const element = this.elements[key];
-      if (element && value) {
-        element.value = value;
-        this.updateCharCount(element);
-      }
-    });
-  }
-
-  /**
-   * Update theme toggle button state
-   */
-  updateThemeToggle() {
-    const icon = this.elements.themeToggle?.querySelector('.theme-icon');
-    if (icon) {
-      icon.textContent = this.state.theme === 'dark' ? '🌞' : '🌙';
-    }
-  }
-
-  /**
-   * Update template selection visual state
-   */
-  updateTemplateSelection() {
-    this.elements.templateBtns?.forEach(btn => {
-      const isActive = btn.dataset.template === this.state.currentTemplate;
-      btn.classList.toggle('active', isActive);
-      btn.setAttribute('aria-checked', isActive.toString());
-    });
-  }
-
-  /* ========================================
-     EVENT HANDLING
-  ======================================== */
-
-  /**
-   * Bind all event listeners
-   */
-  bindEvents() {
-    // Theme toggle
-    this.elements.themeToggle?.addEventListener('click', () => this.toggleTheme());
-
-    // Form inputs with optimized debouncing
-    this.bindFormInputEvents();
-
-    // Color inputs
-    this.bindColorInputEvents();
-
-    // Image upload
-    this.bindImageUploadEvents();
-
-    // Template selection
-    this.bindTemplateEvents();
-
-    // View controls
-    this.bindViewEvents();
-
-    // Export buttons
-    this.bindExportEvents();
-
-    // Keyboard shortcuts
-    this.bindKeyboardEvents();
-
-    // Window events
-    this.bindWindowEvents();
-
-    console.log('✅ Event listeners bound successfully');
-  }
-
-  /**
-   * Bind form input events with optimized performance
-   */
-  bindFormInputEvents() {
-    const inputFields = [
-      'firstName', 'lastName', 'title', 'company',
-      'email', 'phone', 'website', 'linkedin', 'twitter', 
-      'github', 'instagram', 'facebook', 'tiktok'
-    ];
-
-    inputFields.forEach(fieldName => {
-      const element = this.elements[fieldName];
-      if (element) {
-        // Input event with debouncing
-        element.addEventListener('input', (e) => this.handleInputChange(e));
-        
-        // Blur event for validation
-        element.addEventListener('blur', () => this.validateInput(element));
-        
-        // Focus event for analytics
-        element.addEventListener('focus', () => this.handleInputFocus(element));
-      }
-    });
-  }
-
-  /**
-   * Bind color input events
-   */
-  bindColorInputEvents() {
-    this.elements.colorPicker?.addEventListener('input', (e) => {
-      this.elements.colorText.value = e.target.value;
-      this.schedulePreviewUpdate();
-    });
-
-    this.elements.colorText?.addEventListener('input', (e) => {
-      const color = e.target.value;
-      if (this.isValidHexColor(color)) {
-        this.elements.colorPicker.value = color;
-        this.schedulePreviewUpdate();
-      }
-    });
-  }
-
-  /**
-   * Bind template selection events
-   */
-  bindTemplateEvents() {
-    this.elements.templateBtns?.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const template = btn.dataset.template;
-        if (template && this.templates[template]) {
-          this.switchTemplate(template);
-        }
-      });
-
-      // Keyboard navigation
-      btn.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          btn.click();
-        }
-      });
-    });
-  }
-
-  /**
-   * Bind view control events
-   */
-  bindViewEvents() {
-    this.elements.viewBtns?.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const view = btn.dataset.view;
-        if (view) {
-          this.switchView(view);
-        }
-      });
-    });
-  }
-
-  /**
-   * Bind export button events
-   */
-  bindExportEvents() {
-    this.elements.copyHtmlBtn?.addEventListener('click', () => this.copySignature('html'));
-    this.elements.copyTextBtn?.addEventListener('click', () => this.copySignature('text'));
-    this.elements.downloadBtn?.addEventListener('click', () => this.downloadSignature());
-  }
-
-  /**
-   * Bind keyboard shortcuts
-   */
-  bindKeyboardEvents() {
-    document.addEventListener('keydown', (e) => {
-      // Ctrl/Cmd + K to focus first input
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault();
-        this.elements.firstName?.focus();
-      }
-
-      // Ctrl/Cmd + Enter to copy HTML signature
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-        e.preventDefault();
-        this.copySignature('html');
-      }
-
-      // Escape to clear focus
-      if (e.key === 'Escape') {
-        document.activeElement?.blur();
-      }
-
-      // Ctrl/Cmd + S to save (prevent default)
-      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-        e.preventDefault();
-        this.saveFormData();
-        this.showNotification('Progress saved locally', 'success');
-      }
-    });
-  }
-
-  /**
-   * Bind window events
-   */
-  bindWindowEvents() {
-    // Handle page visibility changes
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) {
-        this.updatePreview();
-      }
-    });
-
-    // Handle window resize with debouncing
-    window.addEventListener('resize', this.debounce(() => {
-      this.updatePreview();
-    }, 250));
-
-    // Handle beforeunload for unsaved changes
-    window.addEventListener('beforeunload', (e) => {
-      if (this.state.isDirty) {
-        e.preventDefault();
-        e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
-        return e.returnValue;
-      }
-    });
-  }
-
-  /* ========================================
-     INPUT HANDLING METHODS
-  ======================================== */
-
-  /**
-   * Handle input change with optimized debouncing
-   */
-  handleInputChange(event) {
-    const { target } = event;
-    
-    // Update character count immediately
-    this.updateCharCount(target);
-    
-    // Mark as dirty
-    this.state.isDirty = true;
-    
-    // Schedule preview update with debouncing
-    this.schedulePreviewUpdate();
-    
-    // Auto-save form data
-    this.scheduleAutoSave();
-  }
-
-  /**
-   * Handle input focus for analytics
-   */
-  handleInputFocus(element) {
-    // Track field interaction for analytics
-    const fieldName = element.id;
-    console.log(`📊 Field focused: ${fieldName}`);
-  }
-
-  /**
-   * Schedule preview update with optimized debouncing
-   */
-  schedulePreviewUpdate() {
-    // Cancel previous update
-    if (this.rafId) {
-      cancelAnimationFrame(this.rafId);
-    }
-    
-    // Clear existing timer
-    clearTimeout(this.debounceTimer);
-    
-    // Schedule new update
-    this.debounceTimer = setTimeout(() => {
-      this.rafId = requestAnimationFrame(() => {
-        this.updateFormData();
-        this.updatePreview();
-        this.updateProgress();
-      });
-    }, 150);
-  }
-
-  /**
-   * Schedule auto-save with debouncing
-   */
-  scheduleAutoSave() {
-    clearTimeout(this.autoSaveTimer);
-    this.autoSaveTimer = setTimeout(() => {
-      this.saveFormData();
-    }, 2000);
-  }
-
-  /**
-   * Update character count display
-   */
-  updateCharCount(input) {
-    const charCount = input.nextElementSibling;
-    if (charCount?.classList.contains('char-count')) {
-      const current = input.value.length;
-      const max = input.maxLength || 0;
-      charCount.textContent = `${current}/${max}`;
-      
-      // Add warning styling if near limit
-      charCount.classList.toggle('warning', current > max * 0.8);
-    }
-  }
-
-  /**
-   * Validate input field
-   */
-  validateInput(input) {
-    const isValid = input.checkValidity();
-    input.classList.toggle('error', !isValid);
-    
-    if (!isValid) {
-      this.showInputError(input);
-    }
-    
-    return isValid;
-  }
-
-  /**
-   * Show input validation error
-   */
-  showInputError(input) {
-    const fieldName = input.id;
-    const message = this.getValidationMessage(input);
-    this.showNotification(message, 'error');
-  }
-
-  /**
-   * Get validation message for input
-   */
-  getValidationMessage(input) {
-    const fieldName = input.id;
-    const value = input.value;
-    
-    if (input.validity.valueMissing) {
-      return `${this.formatFieldName(fieldName)} is required`;
-    }
-    
-    if (input.validity.typeMismatch) {
-      return `Please enter a valid ${this.formatFieldName(fieldName)}`;
-    }
-    
-    if (input.validity.tooLong) {
-      return `${this.formatFieldName(fieldName)} is too long`;
-    }
-    
-    return `Please check your ${this.formatFieldName(fieldName)}`;
-  }
-
-  /**
-   * Format field name for display
-   */
-  formatFieldName(fieldName) {
-    return fieldName
-      .replace(/([A-Z])/g, ' $1')
-      .replace(/^./, str => str.toUpperCase());
-  }
-
-  /**
-   * Validate hex color
-   */
-  isValidHexColor(color) {
-    return /^#[0-9A-Fa-f]{6}$/.test(color);
-  }
-
-  /* ========================================
-     IMAGE HANDLING METHODS
-  ======================================== */
-
-  /**
-   * Bind image upload events
-   */
-  bindImageUploadEvents() {
-    const { imageUpload, imageInput } = this.elements;
-    
-    if (!imageUpload || !imageInput) return;
-
-    // Click to upload
-    imageUpload.addEventListener('click', () => imageInput.click());
-
-    // File input change
-    imageInput.addEventListener('change', (e) => {
-      if (e.target.files.length) {
-        this.handleImageFile(e.target.files[0]);
-      }
-    });
-
-    // Drag and drop events
-    this.bindDragDropEvents(imageUpload);
-
-    // Keyboard accessibility
-    imageUpload.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        imageInput.click();
-      }
-    });
-  }
-
-  /**
-   * Bind drag and drop events for image upload
-   */
-  bindDragDropEvents(uploadElement) {
-    uploadElement.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      uploadElement.classList.add('dragover');
-    });
-
-    uploadElement.addEventListener('dragleave', (e) => {
-      if (!uploadElement.contains(e.relatedTarget)) {
-        uploadElement.classList.remove('dragover');
-      }
-    });
-
-    uploadElement.addEventListener('drop', (e) => {
-      e.preventDefault();
-      uploadElement.classList.remove('
+}
