@@ -25,13 +25,10 @@ class SignatureStudio {
       executive: { image: 'rounded', showTitle: true, showCompany: true }
     };
 
-    this.socialPlatforms = {
-      linkedin: 'https://linkedin.com',
-      twitter: 'https://twitter.com',
-      github: 'https://github.com',
-      instagram: 'https://instagram.com',
-      facebook: 'https://facebook.com',
-      tiktok: 'https://tiktok.com'
+    this.contactIcons = {
+      email: 'https://ik.imagekit.io/dee7studio/Icons/Email.svg?updatedAt=1751622662187',
+      phone: 'https://ik.imagekit.io/dee7studio/Icons/Phone.svg?updatedAt=1751618330969',
+      website: 'https://ik.imagekit.io/dee7studio/Icons/Website.svg?updatedAt=1751618331133'
     };
 
     this.init();
@@ -300,8 +297,26 @@ class SignatureStudio {
           <div style="${styles.minimal.container}">
             <div style="${styles.minimal.name}">${fullName}</div>
             <div style="${styles.minimal.contact}">
-              ${data.email} ${data.phone ? `• ${data.phone}` : ''} 
-              ${data.website ? `• ${data.website}` : ''}
+              ${data.email ? `
+                <img src="${this.contactIcons.email}" 
+                     style="width: 12px; height: 12px; margin-right: 4px; vertical-align: middle; opacity: 0.7;" 
+                     alt="">
+                ${data.email}
+              ` : ''}
+              ${data.email && data.phone ? ' • ' : ''}
+              ${data.phone ? `
+                <img src="${this.contactIcons.phone}" 
+                     style="width: 12px; height: 12px; margin-right: 4px; margin-left: ${data.email ? '4px' : '0'}; vertical-align: middle; opacity: 0.7;" 
+                     alt="">
+                ${data.phone}
+              ` : ''}
+              ${(data.email || data.phone) && data.website ? ' • ' : ''}
+              ${data.website ? `
+                <img src="${this.contactIcons.website}" 
+                     style="width: 12px; height: 12px; margin-right: 4px; margin-left: ${data.email || data.phone ? '4px' : '0'}; vertical-align: middle; opacity: 0.7;" 
+                     alt="">
+                ${data.website}
+              ` : ''}
             </div>
             ${socialHtml}
           </div>`;
@@ -357,13 +372,34 @@ class SignatureStudio {
     const items = [];
     
     if (data.email) {
-      items.push(`<div style="${styles.contact}">${data.email}</div>`);
+      items.push(`
+        <div style="${styles.contact}">
+          <img src="${this.contactIcons.email}" 
+               style="width: 14px; height: 14px; margin-right: 6px; vertical-align: middle; opacity: 0.8;" 
+               alt="">
+          <span>${data.email}</span>
+        </div>
+      `);
     }
     if (data.phone) {
-      items.push(`<div style="${styles.contact}">${data.phone}</div>`);
+      items.push(`
+        <div style="${styles.contact}">
+          <img src="${this.contactIcons.phone}" 
+               style="width: 14px; height: 14px; margin-right: 6px; vertical-align: middle; opacity: 0.8;" 
+               alt="">
+          <span>${data.phone}</span>
+        </div>
+      `);
     }
     if (data.website) {
-      items.push(`<div style="${styles.contact}">${data.website}</div>`);
+      items.push(`
+        <div style="${styles.contact}">
+          <img src="${this.contactIcons.website}" 
+               style="width: 14px; height: 14px; margin-right: 6px; vertical-align: middle; opacity: 0.8;" 
+               alt="">
+          <span>${data.website}</span>
+        </div>
+      `);
     }
     
     return items.join('');
@@ -416,7 +452,7 @@ class SignatureStudio {
       minimal: {
         container: `font-family: -apple-system, sans-serif; line-height: 1.4;`,
         name: `font-size: 18px; font-weight: 600; color: ${color}; margin-bottom: 3px;`,
-        contact: `font-size: 13px; color: #666; margin: 6px 0;`
+        contact: `font-size: 13px; color: #666; margin: 6px 0; display: inline-flex; align-items: center;`
       },
       corporate: {
         container: `text-align: center; border: 2px solid ${color}; padding: 24px; border-radius: 8px;`,
