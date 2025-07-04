@@ -31,6 +31,16 @@ class SignatureStudio {
       website: 'https://ik.imagekit.io/dee7studio/Icons/Website.svg?updatedAt=1751618331133'
     };
 
+    // FIX: Define social platforms base URLs
+    this.socialPlatforms = {
+      linkedin: 'https://linkedin.com/in',
+      twitter: 'https://twitter.com',
+      github: 'https://github.com',
+      instagram: 'https://instagram.com',
+      facebook: 'https://facebook.com',
+      tiktok: 'https://tiktok.com'
+    };
+
     // Placeholder image
     this.placeholderImage = this.generatePlaceholderSVG();
 
@@ -432,6 +442,7 @@ class SignatureStudio {
       tiktok: 'https://ik.imagekit.io/dee7studio/Icons/Tok%20Tok.svg?updatedAt=1751101326673'
     };
     
+    // FIX: Iterate over the defined 'this.socialPlatforms'
     Object.entries(this.socialPlatforms).forEach(([platform, baseUrl]) => {
       if (data[platform]) {
         const url = this.cleanUrl(data[platform], baseUrl);
@@ -453,6 +464,10 @@ class SignatureStudio {
   cleanUrl(url, baseUrl) {
     url = url.replace(/^https?:\/\//, '').replace(/^www\./, '');
     if (!url.includes(baseUrl.replace('https://', ''))) {
+      // Handle usernames for platforms that need it (like tiktok)
+      if (baseUrl.includes('tiktok')) {
+         return `${baseUrl}/@${url.replace('@','')}`;
+      }
       return `${baseUrl}/${url}`;
     }
     return `https://${url}`;
