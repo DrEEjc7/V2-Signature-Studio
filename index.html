@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signature Studio - Professional Email Signatures</title>
+    <meta name="description" content="Create stunning professional email signatures in seconds. Best-in-class signature generator with premium templates and real-time preview.">
+    <meta name="keywords" content="email signature, professional signature, signature generator, business signature">
+    <meta name="author" content="Dee7 Studio">
+    <meta name="theme-color" content="#000000">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Signature Studio - Professional Email Signatures">
+    <meta property="og:description" content="Create stunning professional email signatures in seconds">
+    <meta property="og:image" content="https://ik.imagekit.io/dee7studio/Logos/Signature%20Studio%20Favicon.svg?updatedAt=1751559591604">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="Signature Studio">
+    <meta property="twitter:description" content="Professional email signatures in seconds">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="https://ik.imagekit.io/dee7studio/Logos/Signature%20Studio%20Favicon.svg?updatedAt=1751559591604">
+    <link rel="apple-touch-icon" href="https://ik.imagekit.io/dee7studio/Logos/Signature%20Studio%20Favicon.svg?updatedAt=1751559591604">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://ik.imagekit.io/dee7studio/Logos/Signature%20Studio%20Favicon.svg?updatedAt=1751559591604" as="image">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header Navigation -->
+        <header class="header" role="banner">
+            <div class="header-content">
+                <div class="nav-left">
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
+                        <span class="theme-icon" aria-hidden="true">🌙</span>
+                        <span class="theme-text">Theme</span>
+                    </button>
+                    <div class="brand">
+                        <div class="logo" aria-hidden="true">
+                            <img src="https://ik.imagekit.io/dee7studio/Logos/Signature%20Studio%20Favicon.svg?updatedAt=1751559591604" 
+                                 alt="Signature Studio Logo" 
+                                 width="48" 
+                                 height="48">
+                        </div>
+                        <div class="brand-info">
+                            <h1>Signature Studio</h1>
+                            <p>Professional email signatures in seconds</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-right">
+                    <div class="app-version" aria-label="App version">v2.0</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content" role="main">
+            <!-- Form Section -->
+            <section class="form-section" aria-labelledby="form-heading">
+                <div class="section-header">
+                    <h2 id="form-heading">
+                        <span class="section-icon" aria-hidden="true">✨</span>
+                        Create Your Signature
+                    </h2>
+                    <div class="progress-container">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <span class="progress-text" id="progressText">0% Complete</span>
+                    </div>
+                </div>
+
+                <form class="signature-form" role="form" novalidate>
+                    <div class="form-grid">
+                        <!-- Template Selection -->
+                        <fieldset class="form-group full-width">
+                            <legend>Choose Template Style</legend>
+                            <div class="template-grid" role="radiogroup" aria-labelledby="template-legend">
+                                <button type="button" class="template-btn active" data-template="modern" role="radio" aria-checked="true">
+                                    <div class="template-preview" aria-hidden="true">
+                                        <div class="template-layout modern-layout">
+                                            <div class="template-avatar"></div>
+                                            <div class="template-info">
+                                                <div class="template-name"></div>
+                                                <div class="template-details"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="template-title">Modern</span>
+                                    <span class="template-desc">Clean lines, colored accent</span>
+                                </button>
+                                
+                                <button type="button" class="template-btn" data-template="classic" role="radio" aria-checked="false">
+                                    <div class="template-preview" aria-hidden="true">
+                                        <div class="template-layout classic-layout">
+                                            <div class="template-avatar square"></div>
+                                            <div class="template-info">
+                                                <div class="template-name"></div>
+                                                <div class="template-details"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="template-title">Classic</span>
+                                    <span class="template-desc">Traditional, timeless</span>
+                                </button>
+                                
+                                <button type="button" class="template-btn" data-template="minimal" role="radio" aria-checked="false">
+                                    <div class="template-preview" aria-hidden="true">
+                                        <div class="template-layout minimal-layout">
+                                            <div class="template-info">
+                                                <div class="template-name"></div>
+                                                <div class="template-details minimal"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="template-title">Minimal</span>
+                                    <span class="template-desc">Clean, text-focused</span>
+                                </button>
+                                
+                                <button type="button" class="template-btn" data-template="corporate" role="radio" aria-checked="false">
+                                    <div class="template-preview" aria-hidden="true">
+                                        <div class="template-layout corporate-layout">
+                                            <div class="template-avatar square small"></div>
+                                            <div class="template-info">
+                                                <div class="template-name"></div>
+                                                <div class="template-company"></div>
+                                                <div class="template-details"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="template-title">Corporate</span>
+                                    <span class="template-desc">Formal, business-focused</span>
+                                </button>
+                                
+                                <button type="button" class="template-btn" data-template="professional" role="radio" aria-checked="false">
+                                    <div class="template-preview" aria-hidden="true">
+                                        <div class="template-layout professional-layout">
+                                            <div class="template-info">
+                                                <div class="template-name"></div>
+                                                <div class="template-company"></div>
+                                            </div>
+                                            <div class="template-details"></div>
+                                        </div>
+                                    </div>
+                                    <span class="template-title">Professional</span>
+                                    <span class="template-desc">Elegant, sophisticated</span>
+                                </button>
+                                
+                                <button type="button" class="template-btn" data-template="executive" role="radio" aria-checked="false">
+                                    <div class="template-preview" aria-hidden="true">
+                                        <div class="template-layout executive-layout">
+                                            <div class="template-info">
+                                                <div class="template-name"></div>
+                                                <div class="template-company"></div>
+                                            </div>
+                                            <div class="template-avatar small"></div>
+                                        </div>
+                                    </div>
+                                    <span class="template-title">Executive</span>
+                                    <span class="template-desc">Premium, leadership</span>
+                                </button>
+                            </div>
+                        </fieldset>
+
+                        <!-- Image Upload -->
+                        <div class="form-group full-width">
+                            <label for="imageInput" class="upload-label">Profile Picture</label>
+                            <div class="image-upload" id="imageUpload" tabindex="0" role="button" aria-label="Upload profile picture">
+                                <input type="file" 
+                                       id="imageInput" 
+                                       accept="image/jpeg,image/png,image/webp" 
+                                       aria-describedby="upload-hint">
+                                <div class="upload-content">
+                                    <div class="upload-icon" aria-hidden="true">📸</div>
+                                    <div class="upload-text">
+                                        <strong>Drop image here</strong> or click to browse
+                                    </div>
+                                    <div class="upload-hint" id="upload-hint">
+                                        PNG, JPG, WebP up to 5MB • 200×200px recommended
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Personal Information -->
+                        <div class="form-group">
+                            <label for="firstName">First Name <span class="required" aria-label="required">*</span></label>
+                            <input type="text" 
+                                   id="firstName" 
+                                   placeholder="John" 
+                                   maxlength="25" 
+                                   required 
+                                   autocomplete="given-name"
+                                   aria-describedby="firstName-count">
+                            <span class="char-count" id="firstName-count" aria-live="polite">0/25</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastName">Last Name <span class="required" aria-label="required">*</span></label>
+                            <input type="text" 
+                                   id="lastName" 
+                                   placeholder="Doe" 
+                                   maxlength="25" 
+                                   required 
+                                   autocomplete="family-name"
+                                   aria-describedby="lastName-count">
+                            <span class="char-count" id="lastName-count" aria-live="polite">0/25</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="title">Job Title</label>
+                            <input type="text" 
+                                   id="title" 
+                                   placeholder="Senior Developer" 
+                                   maxlength="50" 
+                                   autocomplete="organization-title"
+                                   aria-describedby="title-count">
+                            <span class="char-count" id="title-count" aria-live="polite">0/50</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="company">Company</label>
+                            <input type="text" 
+                                   id="company" 
+                                   placeholder="Tech Corp" 
+                                   maxlength="40" 
+                                   autocomplete="organization"
+                                   aria-describedby="company-count">
+                            <span class="char-count" id="company-count" aria-live="polite">0/40</span>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="form-group full-width">
+                            <label for="email">Email Address <span class="required" aria-label="required">*</span></label>
+                            <input type="email" 
+                                   id="email" 
+                                   placeholder="john.doe@company.com" 
+                                   maxlength="50" 
+                                   required 
+                                   autocomplete="email"
+                                   aria-describedby="email-count">
+                            <span class="char-count" id="email-count" aria-live="polite">0/50</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" 
+                                   id="phone" 
+                                   placeholder="+1 (555) 123-4567" 
+                                   maxlength="20" 
+                                   autocomplete="tel"
+                                   aria-describedby="phone-count">
+                            <span class="char-count" id="phone-count" aria-live="polite">0/20</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="website">Website</label>
+                            <input type="url" 
+                                   id="website" 
+                                   placeholder="www.company.com" 
+                                   maxlength="50" 
+                                   autocomplete="url"
+                                   aria-describedby="website-count">
+                            <span class="char-count" id="website-count" aria-live="polite">0/50</span>
+                        </div>
+
+                        <!-- Brand Color -->
+                        <div class="form-group">
+                            <label for="colorPicker">Brand Color</label>
+                            <div class="color-input">
+                                <input type="color" 
+                                       id="colorPicker" 
+                                       value="#000000" 
+                                       aria-label="Brand color picker">
+                                <input type="text" 
+                                       id="colorText" 
+                                       placeholder="#000000" 
+                                       maxlength="7" 
+                                       pattern="^#[0-9A-Fa-f]{6}$"
+                                       aria-label="Brand color hex code">
+                            </div>
+                        </div>
+
+                        <!-- Social Links -->
+                        <fieldset class="form-group full-width">
+                            <legend>Social Links</legend>
+                            <div class="social-grid">
+                                <div class="form-group">
+                                    <label for="linkedin">
+                                        <img src="https://ik.imagekit.io/dee7studio/Icons/LinkedIn.svg?updatedAt=1751101326668" 
+                                             alt="LinkedIn" 
+                                             class="social-label-icon" 
+                                             width="16" 
+                                             height="16"> 
+                                        LinkedIn
+                                    </label>
+                                    <input type="url" 
+                                           id="linkedin" 
+                                           placeholder="linkedin.com/in/johndoe"
+                                           aria-describedby="linkedin-hint">
+                                    <small id="linkedin-hint" class="input-hint">Your LinkedIn profile URL</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="twitter">
+                                        <img src="https://ik.imagekit.io/dee7studio/Icons/Reddit.svg?updatedAt=1751102199116" 
+                                             alt="Twitter/X" 
+                                             class="social-label-icon" 
+                                             width="16" 
+                                             height="16"> 
+                                        Twitter/X
+                                    </label>
+                                    <input type="url" 
+                                           id="twitter" 
+                                           placeholder="twitter.com/johndoe"
+                                           aria-describedby="twitter-hint">
+                                    <small id="twitter-hint" class="input-hint">Your Twitter/X profile URL</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="github">
+                                        <img src="https://ik.imagekit.io/dee7studio/Icons/GitHub.svg?updatedAt=1751618331133" 
+                                             alt="GitHub" 
+                                             class="social-label-icon" 
+                                             width="16" 
+                                             height="16"> 
+                                        GitHub
+                                    </label>
+                                    <input type="url" 
+                                           id="github" 
+                                           placeholder="github.com/johndoe"
+                                           aria-describedby="github-hint">
+                                    <small id="github-hint" class="input-hint">Your GitHub profile URL</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="instagram">
+                                        <img src="https://ik.imagekit.io/dee7studio/Icons/Instagram.svg?updatedAt=1751100484264" 
+                                             alt="Instagram" 
+                                             class="social-label-icon" 
+                                             width="16" 
+                                             height="16"> 
+                                        Instagram
+                                    </label>
+                                    <input type="url" 
+                                           id="instagram" 
+                                           placeholder="instagram.com/johndoe"
+                                           aria-describedby="instagram-hint">
+                                    <small id="instagram-hint" class="input-hint">Your Instagram profile URL</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="facebook">
+                                        <img src="https://ik.imagekit.io/dee7studio/Icons/Facebook.svg?updatedAt=1751101326689" 
+                                             alt="Facebook" 
+                                             class="social-label-icon" 
+                                             width="16" 
+                                             height="16"> 
+                                        Facebook
+                                    </label>
+                                    <input type="url" 
+                                           id="facebook" 
+                                           placeholder="facebook.com/johndoe"
+                                           aria-describedby="facebook-hint">
+                                    <small id="facebook-hint" class="input-hint">Your Facebook profile URL</small>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="tiktok">
+                                        <img src="https://ik.imagekit.io/dee7studio/Icons/Tok%20Tok.svg?updatedAt=1751101326673" 
+                                             alt="TikTok" 
+                                             class="social-label-icon" 
+                                             width="16" 
+                                             height="16"> 
+                                        TikTok
+                                    </label>
+                                    <input type="url" 
+                                           id="tiktok" 
+                                           placeholder="tiktok.com/@johndoe"
+                                           aria-describedby="tiktok-hint">
+                                    <small id="tiktok-hint" class="input-hint">Your TikTok profile URL</small>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Preview Section -->
+            <section class="preview-section" aria-labelledby="preview-heading">
+                <div class="section-header">
+                    <h2 id="preview-heading">
+                        <span class="section-icon" aria-hidden="true">👁️</span>
+                        Live Preview
+                    </h2>
+                    <div class="view-controls" role="tablist" aria-label="Preview modes">
+                        <button class="view-btn active" 
+                                data-view="desktop" 
+                                role="tab" 
+                                aria-selected="true" 
+                                aria-controls="signature-preview">
+                            <span aria-hidden="true">💻</span> Desktop
+                        </button>
+                        <button class="view-btn" 
+                                data-view="mobile" 
+                                role="tab" 
+                                aria-selected="false" 
+                                aria-controls="signature-preview">
+                            <span aria-hidden="true">📱</span> Mobile
+                        </button>
+                    </div>
+                </div>
+
+                <div class="preview-container">
+                    <div class="signature-preview" 
+                         id="signaturePreview" 
+                         role="tabpanel" 
+                         aria-labelledby="preview-heading">
+                        <div class="signature-content" 
+                             id="signatureContent" 
+                             aria-live="polite" 
+                             aria-label="Email signature preview">
+                            <!-- Signature content will be generated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Actions -->
+                <div class="export-section">
+                    <div class="export-buttons">
+                        <button class="export-btn primary" 
+                                id="copyHtmlBtn" 
+                                aria-describedby="copy-html-desc">
+                            <span class="btn-icon" aria-hidden="true">📋</span>
+                            <span>Copy HTML</span>
+                        </button>
+                        <button class="export-btn" 
+                                id="copyTextBtn" 
+                                aria-describedby="copy-text-desc">
+                            <span class="btn-icon" aria-hidden="true">📄</span>
+                            <span>Copy Text</span>
+                        </button>
+                        <button class="export-btn" 
+                                id="downloadBtn" 
+                                aria-describedby="download-desc">
+                            <span class="btn-icon" aria-hidden="true">⬇️</span>
+                            <span>Download vCard</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Hidden descriptions for screen readers -->
+                    <div class="sr-only">
+                        <div id="copy-html-desc">Copy HTML formatted signature to clipboard</div>
+                        <div id="copy-text-desc">Copy plain text signature to clipboard</div>
+                        <div id="download-desc">Download contact information as vCard file</div>
+                    </div>
+                </div>
+
+                <!-- Instructions -->
+                <div class="instructions" role="complementary" aria-labelledby="instructions-heading">
+                    <h3 id="instructions-heading">
+                        <span aria-hidden="true">📖</span> How to Use Your Signature
+                    </h3>
+                    <ol>
+                        <li>Click <strong>"Copy HTML"</strong> to copy your formatted signature</li>
+                        <li>Open your email client's signature settings:
+                            <ul>
+                                <li><strong>Gmail:</strong> Settings → General → Signature</li>
+                                <li><strong>Outlook:</strong> File → Options → Mail → Signatures</li>
+                                <li><strong>Apple Mail:</strong> Preferences → Signatures</li>
+                            </ul>
+                        </li>
+                        <li>Paste using <kbd>Ctrl+Shift+V</kbd> (or <kbd>⌘+Shift+V</kbd> on Mac)</li>
+                        <li>Save your signature and start using it professionally!</li>
+                    </ol>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer" role="contentinfo">
+            <div class="footer-content">
+                <div class="footer-text">
+                    <p class="copyright-text">
+                        Copyright © <span id="currentYear"></span> • Crafted with ❤️ by
+                        <a href="https://dee7studio.com" 
+                           target="_blank" 
+                           rel="noopener noreferrer" 
+                           class="dee7-link">Dee7 Studio</a>
+                    </p>
+                    <p class="footer-tagline">
+                        Making professional communication effortless
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
