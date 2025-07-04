@@ -9,30 +9,24 @@
     <meta name="author" content="Dee7 Studio">
     <meta name="theme-color" content="#000000">
     
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Signature Studio - Professional Email Signatures">
     <meta property="og:description" content="Create stunning professional email signatures in seconds">
     <meta property="og:image" content="https://ik.imagekit.io/dee7studio/Logos/Signature%20Studio%20Favicon.svg?updatedAt=1751559591604">
     
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:title" content="Signature Studio">
     <meta property="twitter:description" content="Professional email signatures in seconds">
     
-    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="https://ik.imagekit.io/dee7studio/Logos/Signature%20Studio%20Favicon.svg?updatedAt=1751559591604">
     <link rel="apple-touch-icon" href="https://ik.imagekit.io/dee7studio/Logos/Signature%20Studio%20Favicon.svg?updatedAt=1751559591604">
     
-    <!-- Preload critical resources -->
     <link rel="preload" href="https://ik.imagekit.io/dee7studio/Logos/Signature%20Studio%20Favicon.svg?updatedAt=1751559591604" as="image">
     
-    <!-- Stylesheets -->
     <link rel="stylesheet" href="main.css">
 </head>
 <body>
     <div class="app-container">
-        <!-- Header Navigation -->
         <header class="header" role="banner">
             <div class="header-content">
                 <div class="nav-left">
@@ -59,9 +53,7 @@
             </div>
         </header>
 
-        <!-- Main Content -->
         <main class="main-content" role="main">
-            <!-- Form Section -->
             <section class="form-section" aria-labelledby="form-heading">
                 <div class="section-header">
                     <h2 id="form-heading">
@@ -78,7 +70,6 @@
 
                 <form class="signature-form" role="form" novalidate>
                     <div class="form-grid">
-                        <!-- Template Selection -->
                         <fieldset class="form-group full-width">
                             <legend>Choose Template Style</legend>
                             <div class="template-grid" role="radiogroup" aria-labelledby="template-legend">
@@ -168,7 +159,6 @@
                             </div>
                         </fieldset>
 
-                        <!-- Image Upload -->
                         <div class="form-group full-width">
                             <label for="imageInput" class="upload-label">Profile Picture</label>
                             <div class="image-upload" id="imageUpload" tabindex="0" role="button" aria-label="Upload profile picture">
@@ -188,7 +178,6 @@
                             </div>
                         </div>
 
-                        <!-- Personal Information -->
                         <div class="form-group">
                             <label for="firstName">First Name <span class="required" aria-label="required">*</span></label>
                             <input type="text" 
@@ -235,7 +224,6 @@
                             <span class="char-count" id="company-count" aria-live="polite">0/40</span>
                         </div>
 
-                        <!-- Contact Information -->
                         <div class="form-group full-width">
                             <label for="email">Email Address <span class="required" aria-label="required">*</span></label>
                             <input type="email" 
@@ -270,7 +258,6 @@
                             <span class="char-count" id="website-count" aria-live="polite">0/50</span>
                         </div>
 
-                        <!-- Brand Color -->
                         <div class="form-group">
                             <label for="colorPicker">Brand Color</label>
                             <div class="color-input">
@@ -287,7 +274,6 @@
                             </div>
                         </div>
 
-                        <!-- Social Links -->
                         <fieldset class="form-group full-width">
                             <legend>Social Links</legend>
                             <div class="social-grid">
@@ -309,7 +295,7 @@
                                 
                                 <div class="form-group">
                                     <label for="twitter">
-                                        <img src="https://ik.imagekit.io/dee7studio/Icons/Reddit.svg?updatedAt=1751102199116" 
+                                        <img src="https://ik.imagekit.io/dee7studio/Icons/Twitter.svg?updatedAt=1751101326689" 
                                              alt="Twitter/X" 
                                              class="social-label-icon" 
                                              width="16" 
@@ -392,7 +378,6 @@
                 </form>
             </section>
 
-            <!-- Preview Section -->
             <section class="preview-section" aria-labelledby="preview-heading">
                 <div class="section-header">
                     <h2 id="preview-heading">
@@ -426,12 +411,10 @@
                              id="signatureContent" 
                              aria-live="polite" 
                              aria-label="Email signature preview">
-                            <!-- Signature content will be generated here -->
-                        </div>
+                            </div>
                     </div>
                 </div>
 
-                <!-- Export Actions -->
                 <div class="export-section">
                     <div class="export-buttons">
                         <button class="export-btn primary" 
@@ -454,7 +437,6 @@
                         </button>
                     </div>
                     
-                    <!-- Hidden descriptions for screen readers -->
                     <div class="sr-only">
                         <div id="copy-html-desc">Copy HTML formatted signature to clipboard</div>
                         <div id="copy-text-desc">Copy plain text signature to clipboard</div>
@@ -462,7 +444,6 @@
                     </div>
                 </div>
 
-                <!-- Instructions -->
                 <div class="instructions" role="complementary" aria-labelledby="instructions-heading">
                     <h3 id="instructions-heading">
                         <span aria-hidden="true">📖</span> How to Use Your Signature
@@ -483,7 +464,6 @@
             </section>
         </main>
 
-        <!-- Footer -->
         <footer class="footer" role="contentinfo">
             <div class="footer-content">
                 <div class="footer-text">
@@ -502,7 +482,6 @@
         </footer>
     </div>
 
-    <!-- JavaScript -->
     <script src="app.js"></script>
 </body>
 </html>
