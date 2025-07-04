@@ -31,6 +31,9 @@ class SignatureStudio {
       website: 'https://ik.imagekit.io/dee7studio/Icons/Website.svg?updatedAt=1751618331133'
     };
 
+    // Placeholder image
+    this.placeholderImage = this.generatePlaceholderSVG();
+
     this.init();
   }
 
@@ -357,13 +360,25 @@ class SignatureStudio {
     }
   }
 
+  generatePlaceholderSVG() {
+    const svg = `
+      <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="80" height="80" fill="#f1f5f9" rx="12"/>
+        <circle cx="40" cy="30" r="14" fill="#cbd5e1"/>
+        <path d="M40 50c-10 0-18 8-18 18h36c0-10-8-18-18-18z" fill="#94a3b8"/>
+      </svg>
+    `;
+    return `data:image/svg+xml;base64,${btoa(svg)}`;
+  }
+
   getImageHtml(template) {
-    if (template.image === 'hidden' || !this.state.imageData) return '';
+    if (template.image === 'hidden') return '';
     
+    const imageSrc = this.state.imageData || this.placeholderImage;
     const borderRadius = template.image === 'rounded' ? '50%' : '8px';
     const size = this.state.template === 'corporate' ? '90px' : '80px';
     
-    return `<img src="${this.state.imageData}" 
+    return `<img src="${imageSrc}" 
             style="width: ${size}; height: ${size}; object-fit: cover; 
             border-radius: ${borderRadius};" alt="Profile">`;
   }
@@ -408,10 +423,19 @@ class SignatureStudio {
   getSocialHtml(data) {
     const links = [];
     
+    const socialIcons = {
+      linkedin: 'https://ik.imagekit.io/dee7studio/Icons/LinkedIn.svg?updatedAt=1751101326668',
+      twitter: 'https://ik.imagekit.io/dee7studio/Icons/X.svg?updatedAt=1751101329412',
+      github: 'https://ik.imagekit.io/dee7studio/Icons/github.png?updatedAt=1751635061396',
+      instagram: 'https://ik.imagekit.io/dee7studio/Icons/Instagram.svg?updatedAt=1751100484264',
+      facebook: 'https://ik.imagekit.io/dee7studio/Icons/Facebook.svg?updatedAt=1751101326689',
+      tiktok: 'https://ik.imagekit.io/dee7studio/Icons/Tok%20Tok.svg?updatedAt=1751101326673'
+    };
+    
     Object.entries(this.socialPlatforms).forEach(([platform, baseUrl]) => {
       if (data[platform]) {
         const url = this.cleanUrl(data[platform], baseUrl);
-        const icon = this.els[platform].previousElementSibling.querySelector('img').src;
+        const icon = socialIcons[platform];
         
         links.push(`
           <a href="${url}" target="_blank" rel="noopener" 
