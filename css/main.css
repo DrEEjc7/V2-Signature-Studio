@@ -530,29 +530,6 @@ fieldset legend {
   font-family: inherit;
 }
 
-/* Add padding for icon inputs */
-#email,
-#phone,
-#website {
-  padding-left: var(--spacing-3xl);
-}
-
-/* Icon positioning for inputs */
-.form-group {
-  position: relative;
-}
-
-.form-group .input-icon {
-  position: absolute;
-  left: var(--spacing-lg);
-  top: 50%;
-  transform: translateY(-50%);
-  width: 16px;
-  height: 16px;
-  opacity: 0.6;
-  pointer-events: none;
-}
-
 .form-group input:hover {
   border-color: var(--border-hover);
 }
