@@ -25,10 +25,10 @@ class SignatureStudio {
       executive: { image: 'rounded', showTitle: true, showCompany: true }
     };
 
-    this.contactIcons = {
-      email: 'https://ik.imagekit.io/dee7studio/Icons/Email.svg?updatedAt=1751622662187',
-      phone: 'https://ik.imagekit.io/dee7studio/Icons/Phone.svg?updatedAt=1751618330969',
-      website: 'https://ik.imagekit.io/dee7studio/Icons/Website.svg?updatedAt=1751618331133'
+  this.contactIcons = {
+    email: 'https://ik.imagekit.io/dee7studio/Icons/Email.svg?updatedAt=1751702117591',
+    phone: 'https://ik.imagekit.io/dee7studio/Icons/Phone.svg?updatedAt=1751702117676',
+    website: 'https://ik.imagekit.io/dee7studio/Icons/Website.svg?updatedAt=1751702117600'
     };
 
     // FIX: Define social platforms base URLs
