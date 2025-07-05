@@ -796,7 +796,7 @@ fieldset legend {
 }
 
 .signature-preview {
-  background: var(--bg-secondary);
+  background: transparent;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-xl);
   padding: var(--spacing-2xl);
@@ -816,6 +816,8 @@ fieldset legend {
   line-height: var(--line-height-normal);
   position: relative;
   z-index: 1;
+  /* Ensure signature content has transparent background */
+  background: transparent;
 }
 
 /* ========================================
