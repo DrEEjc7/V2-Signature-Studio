@@ -1,4 +1,40 @@
-/**
+getImageHtml(template) {
+    if (template.image === 'hidden') return '';
+    
+    const imageSrc = this.state.imageData || this.placeholderImage;
+    const borderRadius = template.image === 'rounded' ? '50%' : '8px';
+    const config = this.sizeConfigs[this.state.size];
+    const size = this.state.template === 'corporate' ? config.imageSize.corporate : config.imageSize.default;
+    const margin = this.state.template === 'corporate' ? 'margin-bottom: 15px;' : '';
+    
+    return `<img src="${imageSrc}" 
+            style="width: ${size}; height: ${size}; object-fit: cover; 
+            border-radius: ${borderRadius}; ${margin}" alt="Profile">`;
+  }
+
+  getContactHtml(data, config) {
+    const items = [];
+    const contactStyle = `font-size: ${config.contactSize}; color: #666; margin-bottom: 5px; display: block;`;
+    
+    if (data.email) {
+      items.push(`
+        <div style="${contactStyle}">
+          <span style="margin-right: 8px;">${this.contactIcons.email}</span>
+          <a href="mailto:${data.email}" style="color: #666; text-decoration: none;">${data.email}</a>
+        </div>
+      `);
+    }
+    if (data.phone) {
+      items.push(`
+        <div style="${contactStyle}">
+          <span style="margin-right: 8px;">${this.contactIcons.phone}</span>
+          <a href="tel:${data.phone}" style="color: #666; text-decoration: none;">${data.phone}</a>
+        </div>
+      `);
+    }
+    if (data.website) {
+      const cleanWebsite = data.website.replace(/^https?:\/\//, '').replace(/^www\./, '');
+      const websiteUrl = data.website.startsWith('http') ? data.website :/**
  * Signature Studio - Professional Email Signature Generator
  * Fixed for email client compatibility - no external images
  * Version: 2.1
@@ -11,6 +47,7 @@ class SignatureStudio {
     this.state = {
       theme: localStorage.getItem('signature-theme') || 'light',
       template: localStorage.getItem('signature-template') || 'modern',
+      size: localStorage.getItem('signature-size') || 'medium',
       view: 'desktop',
       imageData: null,
       formData: {}
@@ -23,6 +60,43 @@ class SignatureStudio {
       corporate: { image: 'square', showTitle: true, showCompany: true },
       professional: { image: 'rounded', showTitle: true, showCompany: true },
       executive: { image: 'rounded', showTitle: true, showCompany: true }
+    };
+
+    // Size configurations for responsive signatures
+    this.sizeConfigs = {
+      small: {
+        nameSize: { minimal: '16px', modern: '18px', classic: '16px', corporate: '18px', professional: '20px', executive: '22px' },
+        titleSize: '12px',
+        companySize: { minimal: '13px', modern: '14px', classic: '14px', corporate: '14px', professional: '15px', executive: '16px' },
+        contactSize: '12px',
+        socialSize: '11px',
+        imageSize: { corporate: '70px', default: '60px' },
+        spacing: { small: 'margin-bottom: 4px; line-height: 1.3;', medium: 'margin-bottom: 6px; line-height: 1.4;', large: 'margin-bottom: 8px; line-height: 1.5;' },
+        borderWidth: { modern: '1px', professional: '1px', executive: '2px' },
+        padding: { corporate: '15px', professional: '10px', executive: '12px', default: '12px' }
+      },
+      medium: {
+        nameSize: { minimal: '18px', modern: '22px', classic: '20px', corporate: '20px', professional: '24px', executive: '26px' },
+        titleSize: '14px',
+        companySize: { minimal: '14px', modern: '16px', classic: '16px', corporate: '16px', professional: '18px', executive: '19px' },
+        contactSize: '14px',
+        socialSize: '13px',
+        imageSize: { corporate: '90px', default: '80px' },
+        spacing: { small: 'margin-bottom: 6px; line-height: 1.4;', medium: 'margin-bottom: 10px; line-height: 1.5;', large: 'margin-bottom: 14px; line-height: 1.6;' },
+        borderWidth: { modern: '2px', professional: '2px', executive: '3px' },
+        padding: { corporate: '20px', professional: '15px', executive: '15px', default: '16px' }
+      },
+      large: {
+        nameSize: { minimal: '20px', modern: '26px', classic: '24px', corporate: '24px', professional: '28px', executive: '30px' },
+        titleSize: '16px',
+        companySize: { minimal: '16px', modern: '18px', classic: '18px', corporate: '18px', professional: '20px', executive: '22px' },
+        contactSize: '16px',
+        socialSize: '15px',
+        imageSize: { corporate: '110px', default: '100px' },
+        spacing: { small: 'margin-bottom: 8px; line-height: 1.4;', medium: 'margin-bottom: 12px; line-height: 1.6;', large: 'margin-bottom: 16px; line-height: 1.7;' },
+        borderWidth: { modern: '3px', professional: '3px', executive: '4px' },
+        padding: { corporate: '25px', professional: '18px', executive: '18px', default: '20px' }
+      }
     };
 
     // Contact icons as emojis for email client compatibility
@@ -95,6 +169,7 @@ class SignatureStudio {
       
       // Collections
       templateBtns: document.querySelectorAll('.template-btn'),
+      sizeBtns: document.querySelectorAll('.size-btn'),
       viewBtns: document.querySelectorAll('.view-btn'),
       inputs: document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="url"]')
     };
@@ -131,6 +206,11 @@ class SignatureStudio {
     // Template selection
     this.els.templateBtns.forEach(btn => {
       btn.addEventListener('click', () => this.selectTemplate(btn.dataset.template));
+    });
+
+    // Size selection
+    this.els.sizeBtns.forEach(btn => {
+      btn.addEventListener('click', () => this.selectSize(btn.dataset.size));
     });
 
     // View controls
@@ -249,6 +329,19 @@ class SignatureStudio {
     this.updatePreview();
   }
 
+  selectSize(size) {
+    this.state.size = size;
+    
+    this.els.sizeBtns.forEach(btn => {
+      const isActive = btn.dataset.size === size;
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-checked', isActive);
+    });
+    
+    localStorage.setItem('signature-size', size);
+    this.updatePreview();
+  }
+
   switchView(view) {
     this.state.view = view;
     
@@ -303,39 +396,33 @@ class SignatureStudio {
     const fullName = `${data.firstName} ${data.lastName}`.trim() || 'John Doe';
     const imageHtml = this.getImageHtml(template);
     const socialHtml = this.getSocialHtml(data);
-
-    // Add proper spacing for email clients
-    const spacing = {
-      small: 'margin-bottom: 6px; line-height: 1.4;',
-      medium: 'margin-bottom: 10px; line-height: 1.5;',
-      large: 'margin-bottom: 14px; line-height: 1.6;'
-    };
+    const config = this.sizeConfigs[this.state.size];
 
     switch (this.state.template) {
       case 'minimal':
         return `
-          <div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #333;">
-            <div style="font-size: 18px; font-weight: bold; color: ${data.color}; ${spacing.medium}">${fullName}</div>
-            <div style="${spacing.medium}">
-              ${this.getMinimalContactHtml(data)}
+          <div style="font-family: Arial, sans-serif; font-size: ${config.contactSize}; line-height: 1.6; color: #333;">
+            <div style="font-size: ${config.nameSize.minimal}; font-weight: bold; color: ${data.color}; ${config.spacing.medium}">${fullName}</div>
+            <div style="${config.spacing.medium}">
+              ${this.getMinimalContactHtml(data, config)}
             </div>
             ${socialHtml}
           </div>`;
 
       case 'modern':
         return `
-          <table style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6;">
+          <table style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: ${config.contactSize}; line-height: 1.6;">
             <tr>
               ${imageHtml ? `<td style="padding-right: 20px; vertical-align: top;">${imageHtml}</td>` : ''}
               <td style="vertical-align: top; position: relative;">
-                <div style="border-left: 2px solid ${data.color}; padding-left: 16px;">
-                  <div style="font-size: 22px; font-weight: bold; color: ${data.color}; ${spacing.medium}">${fullName}</div>
+                <div style="border-left: ${config.borderWidth.modern} solid ${data.color}; padding-left: ${config.padding.default};">
+                  <div style="font-size: ${config.nameSize.modern}; font-weight: bold; color: ${data.color}; ${config.spacing.medium}">${fullName}</div>
                   ${template.showTitle && data.title ? 
-                    `<div style="font-size: 14px; color: #666; font-style: italic; ${spacing.small}">${data.title}</div>` : ''}
+                    `<div style="font-size: ${config.titleSize}; color: #666; font-style: italic; ${config.spacing.small}">${data.title}</div>` : ''}
                   ${template.showCompany && data.company ? 
-                    `<div style="font-size: 16px; font-weight: bold; color: #333; ${spacing.medium}">${data.company}</div>` : ''}
-                  <div style="${spacing.medium}">
-                    ${this.getContactHtml(data)}
+                    `<div style="font-size: ${config.companySize.modern}; font-weight: bold; color: #333; ${config.spacing.medium}">${data.company}</div>` : ''}
+                  <div style="${config.spacing.medium}">
+                    ${this.getContactHtml(data, config)}
                   </div>
                   ${socialHtml}
                 </div>
@@ -345,17 +432,17 @@ class SignatureStudio {
 
       case 'classic':
         return `
-          <table style="border-collapse: collapse; font-family: 'Times New Roman', serif; font-size: 14px; line-height: 1.6;">
+          <table style="border-collapse: collapse; font-family: 'Times New Roman', serif; font-size: ${config.contactSize}; line-height: 1.6;">
             <tr>
               ${imageHtml ? `<td style="padding-right: 20px; vertical-align: top;">${imageHtml}</td>` : ''}
               <td style="vertical-align: top;">
-                <div style="font-size: 20px; font-weight: bold; color: ${data.color}; ${spacing.medium}">${fullName}</div>
+                <div style="font-size: ${config.nameSize.classic}; font-weight: bold; color: ${data.color}; ${config.spacing.medium}">${fullName}</div>
                 ${template.showTitle && data.title ? 
-                  `<div style="font-size: 14px; color: #666; font-style: italic; ${spacing.small}">${data.title}</div>` : ''}
+                  `<div style="font-size: ${config.titleSize}; color: #666; font-style: italic; ${config.spacing.small}">${data.title}</div>` : ''}
                 ${template.showCompany && data.company ? 
-                  `<div style="font-size: 16px; font-weight: bold; color: #333; ${spacing.medium}">${data.company}</div>` : ''}
-                <div style="${spacing.medium}">
-                  ${this.getContactHtml(data)}
+                  `<div style="font-size: ${config.companySize.classic}; font-weight: bold; color: #333; ${config.spacing.medium}">${data.company}</div>` : ''}
+                <div style="${config.spacing.medium}">
+                  ${this.getContactHtml(data, config)}
                 </div>
                 ${socialHtml}
               </td>
@@ -364,34 +451,34 @@ class SignatureStudio {
 
       case 'corporate':
         return `
-          <div style="font-family: Arial, sans-serif; text-align: center; border: 2px solid ${data.color}; padding: 20px; border-radius: 8px; max-width: 400px;">
+          <div style="font-family: Arial, sans-serif; text-align: center; border: 2px solid ${data.color}; padding: ${config.padding.corporate}; border-radius: 8px; max-width: 400px;">
             ${imageHtml}
-            <div style="font-size: 20px; font-weight: bold; color: ${data.color}; text-transform: uppercase; ${spacing.medium}">${fullName}</div>
+            <div style="font-size: ${config.nameSize.corporate}; font-weight: bold; color: ${data.color}; text-transform: uppercase; ${config.spacing.medium}">${fullName}</div>
             ${template.showTitle && data.title ? 
-              `<div style="font-size: 14px; color: #666; ${spacing.small}">${data.title}</div>` : ''}
+              `<div style="font-size: ${config.titleSize}; color: #666; ${config.spacing.small}">${data.title}</div>` : ''}
             ${template.showCompany && data.company ? 
-              `<div style="font-size: 16px; font-weight: bold; color: #333; text-transform: uppercase; ${spacing.medium}">${data.company}</div>` : ''}
-            <div style="${spacing.medium}">
-              ${this.getContactHtml(data)}
+              `<div style="font-size: ${config.companySize.corporate}; font-weight: bold; color: #333; text-transform: uppercase; ${config.spacing.medium}">${data.company}</div>` : ''}
+            <div style="${config.spacing.medium}">
+              ${this.getContactHtml(data, config)}
             </div>
             ${socialHtml}
           </div>`;
 
       case 'professional':
         return `
-          <table style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6;">
+          <table style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: ${config.contactSize}; line-height: 1.6;">
             <tr>
               ${imageHtml ? `<td style="padding-right: 20px; vertical-align: top;">${imageHtml}</td>` : ''}
               <td style="vertical-align: top;">
-                <div style="border-bottom: 2px solid ${data.color}; padding-bottom: 12px; margin-bottom: 12px;">
-                  <div style="font-size: 24px; font-weight: bold; color: ${data.color}; letter-spacing: 1px; ${spacing.small}">${fullName}</div>
+                <div style="border-bottom: ${config.borderWidth.professional} solid ${data.color}; padding-bottom: ${config.padding.professional}; margin-bottom: ${config.padding.professional};">
+                  <div style="font-size: ${config.nameSize.professional}; font-weight: bold; color: ${data.color}; letter-spacing: 1px; ${config.spacing.small}">${fullName}</div>
                   ${template.showTitle && data.title ? 
-                    `<div style="font-size: 16px; color: #555; font-weight: 600; text-transform: capitalize; ${spacing.small}">${data.title}</div>` : ''}
+                    `<div style="font-size: ${config.titleSize}; color: #555; font-weight: 600; text-transform: capitalize; ${config.spacing.small}">${data.title}</div>` : ''}
                 </div>
                 ${template.showCompany && data.company ? 
-                  `<div style="font-size: 18px; font-weight: bold; color: #333; ${spacing.medium}">${data.company}</div>` : ''}
-                <div style="${spacing.medium}">
-                  ${this.getContactHtml(data)}
+                  `<div style="font-size: ${config.companySize.professional}; font-weight: bold; color: #333; ${config.spacing.medium}">${data.company}</div>` : ''}
+                <div style="${config.spacing.medium}">
+                  ${this.getContactHtml(data, config)}
                 </div>
                 ${socialHtml}
               </td>
@@ -400,19 +487,19 @@ class SignatureStudio {
 
       case 'executive':
         return `
-          <table style="border-collapse: collapse; font-family: 'Georgia', serif; font-size: 14px; line-height: 1.7;">
+          <table style="border-collapse: collapse; font-family: 'Georgia', serif; font-size: ${config.contactSize}; line-height: 1.7;">
             <tr>
               ${imageHtml ? `<td style="padding-right: 25px; vertical-align: top;">${imageHtml}</td>` : ''}
               <td style="vertical-align: top;">
-                <div style="border-top: 3px solid ${data.color}; border-bottom: 1px solid ${data.color}; padding: 15px 0; margin-bottom: 15px;">
-                  <div style="font-size: 26px; font-weight: bold; color: ${data.color}; text-transform: uppercase; letter-spacing: 2px; ${spacing.small}">${fullName}</div>
+                <div style="border-top: ${config.borderWidth.executive} solid ${data.color}; border-bottom: 1px solid ${data.color}; padding: ${config.padding.executive} 0; margin-bottom: ${config.padding.executive};">
+                  <div style="font-size: ${config.nameSize.executive}; font-weight: bold; color: ${data.color}; text-transform: uppercase; letter-spacing: 2px; ${config.spacing.small}">${fullName}</div>
                   ${template.showTitle && data.title ? 
-                    `<div style="font-size: 17px; color: #444; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; ${spacing.small}">${data.title}</div>` : ''}
+                    `<div style="font-size: ${config.titleSize}; color: #444; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; ${config.spacing.small}">${data.title}</div>` : ''}
                 </div>
                 ${template.showCompany && data.company ? 
-                  `<div style="font-size: 19px; font-weight: bold; color: #222; ${spacing.medium}">${data.company}</div>` : ''}
-                <div style="${spacing.medium}">
-                  ${this.getContactHtml(data)}
+                  `<div style="font-size: ${config.companySize.executive}; font-weight: bold; color: #222; ${config.spacing.medium}">${data.company}</div>` : ''}
+                <div style="${config.spacing.medium}">
+                  ${this.getContactHtml(data, config)}
                 </div>
                 ${socialHtml}
               </td>
@@ -421,17 +508,17 @@ class SignatureStudio {
 
       default:
         return `
-          <table style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6;">
+          <table style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: ${config.contactSize}; line-height: 1.6;">
             <tr>
               ${imageHtml ? `<td style="padding-right: 20px; vertical-align: top;">${imageHtml}</td>` : ''}
               <td style="vertical-align: top;">
-                <div style="font-size: 22px; font-weight: bold; color: ${data.color}; ${spacing.medium}">${fullName}</div>
+                <div style="font-size: ${config.nameSize.modern}; font-weight: bold; color: ${data.color}; ${config.spacing.medium}">${fullName}</div>
                 ${template.showTitle && data.title ? 
-                  `<div style="font-size: 14px; color: #666; font-style: italic; ${spacing.small}">${data.title}</div>` : ''}
+                  `<div style="font-size: ${config.titleSize}; color: #666; font-style: italic; ${config.spacing.small}">${data.title}</div>` : ''}
                 ${template.showCompany && data.company ? 
-                  `<div style="font-size: 16px; font-weight: bold; color: #333; ${spacing.medium}">${data.company}</div>` : ''}
-                <div style="${spacing.medium}">
-                  ${this.getContactHtml(data)}
+                  `<div style="font-size: ${config.companySize.modern}; font-weight: bold; color: #333; ${config.spacing.medium}">${data.company}</div>` : ''}
+                <div style="${config.spacing.medium}">
+                  ${this.getContactHtml(data, config)}
                 </div>
                 ${socialHtml}
               </td>
@@ -464,9 +551,9 @@ class SignatureStudio {
             border-radius: ${borderRadius}; ${margin}" alt="Profile">`;
   }
 
-  getContactHtml(data) {
+  getContactHtml(data, config) {
     const items = [];
-    const contactStyle = 'font-size: 14px; color: #666; margin-bottom: 5px; display: block;';
+    const contactStyle = `font-size: ${config.contactSize}; color: #666; margin-bottom: 5px; display: block;`;
     
     if (data.email) {
       items.push(`
@@ -498,7 +585,7 @@ class SignatureStudio {
     return items.join('');
   }
 
-  getMinimalContactHtml(data) {
+  getMinimalContactHtml(data, config) {
     const items = [];
     
     if (data.email) {
@@ -518,15 +605,16 @@ class SignatureStudio {
 
   getSocialHtml(data) {
     const links = [];
-    const socialStyle = 'color: #666; text-decoration: none; margin-right: 15px; font-size: 13px;';
+    const config = this.sizeConfigs[this.state.size];
+    const socialStyle = `color: #666; text-decoration: none; margin-right: 15px; font-size: ${config.socialSize};`;
     
-    Object.entries(this.socialPlatforms).forEach(([platform, config]) => {
+    Object.entries(this.socialPlatforms).forEach(([platform, platformConfig]) => {
       if (data[platform]) {
-        const url = this.cleanUrl(data[platform], config.baseUrl);
+        const url = this.cleanUrl(data[platform], platformConfig.baseUrl);
         
         links.push(`
           <a href="${url}" target="_blank" rel="noopener" style="${socialStyle}">
-            ${config.name}
+            ${platformConfig.name}
           </a>
         `);
       }
@@ -731,6 +819,11 @@ class SignatureStudio {
       const savedTemplate = localStorage.getItem('signature-template');
       if (savedTemplate && this.templates[savedTemplate]) {
         this.selectTemplate(savedTemplate);
+      }
+
+      const savedSize = localStorage.getItem('signature-size');
+      if (savedSize && this.sizeConfigs[savedSize]) {
+        this.selectSize(savedSize);
       }
     } catch (err) {
       console.error('Error loading saved data:', err);
