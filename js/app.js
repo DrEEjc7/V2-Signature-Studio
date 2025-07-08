@@ -1,7 +1,7 @@
 /**
  * Signature Studio - Professional Email Signature Generator
- * Clean, optimized, best-in-class implementation
- * Version: 2.0
+ * Fixed for email client compatibility - no external images
+ * Version: 2.1
  */
 
 'use strict';
@@ -25,20 +25,21 @@ class SignatureStudio {
       executive: { image: 'rounded', showTitle: true, showCompany: true }
     };
 
-  this.contactIcons = {
-    email: 'https://ik.imagekit.io/dee7studio/Icons/Email.svg?updatedAt=1751702117591',
-    phone: 'https://ik.imagekit.io/dee7studio/Icons/Phone.svg?updatedAt=1751702117676',
-    website: 'https://ik.imagekit.io/dee7studio/Icons/Website.svg?updatedAt=1751702117600'
+    // Contact icons as emojis for email client compatibility
+    this.contactIcons = {
+      email: '📧',
+      phone: '📱',
+      website: '🌐'
     };
 
-    // FIX: Define social platforms base URLs
+    // Social platform names for text links
     this.socialPlatforms = {
-      linkedin: 'https://linkedin.com/in',
-      twitter: 'https://twitter.com',
-      github: 'https://github.com',
-      instagram: 'https://instagram.com',
-      facebook: 'https://facebook.com',
-      tiktok: 'https://tiktok.com'
+      linkedin: { name: 'LinkedIn', baseUrl: 'https://linkedin.com/in' },
+      twitter: { name: 'Twitter', baseUrl: 'https://twitter.com' },
+      github: { name: 'GitHub', baseUrl: 'https://github.com' },
+      instagram: { name: 'Instagram', baseUrl: 'https://instagram.com' },
+      facebook: { name: 'Facebook', baseUrl: 'https://facebook.com' },
+      tiktok: { name: 'TikTok', baseUrl: 'https://tiktok.com' }
     };
 
     // Placeholder image
@@ -304,64 +305,52 @@ class SignatureStudio {
     const socialHtml = this.getSocialHtml(data);
     const styles = this.getTemplateStyles(data.color);
 
+    // Add proper spacing for email clients
+    const spacing = {
+      small: 'margin-bottom: 6px; line-height: 1.4;',
+      medium: 'margin-bottom: 10px; line-height: 1.5;',
+      large: 'margin-bottom: 14px; line-height: 1.6;'
+    };
+
     switch (this.state.template) {
       case 'minimal':
         return `
-          <div style="${styles.minimal.container}">
-            <div style="${styles.minimal.name}">${fullName}</div>
-            <div style="${styles.minimal.contact}">
-              ${data.email ? `
-                <img src="${this.contactIcons.email}" 
-                     style="width: 12px; height: 12px; margin-right: 4px; vertical-align: middle; opacity: 0.7;" 
-                     alt="">
-                ${data.email}
-              ` : ''}
-              ${data.email && data.phone ? ' • ' : ''}
-              ${data.phone ? `
-                <img src="${this.contactIcons.phone}" 
-                     style="width: 12px; height: 12px; margin-right: 4px; margin-left: ${data.email ? '4px' : '0'}; vertical-align: middle; opacity: 0.7;" 
-                     alt="">
-                ${data.phone}
-              ` : ''}
-              ${(data.email || data.phone) && data.website ? ' • ' : ''}
-              ${data.website ? `
-                <img src="${this.contactIcons.website}" 
-                     style="width: 12px; height: 12px; margin-right: 4px; margin-left: ${data.email || data.phone ? '4px' : '0'}; vertical-align: middle; opacity: 0.7;" 
-                     alt="">
-                ${data.website}
-              ` : ''}
+          <div style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #333;">
+            <div style="font-size: 18px; font-weight: bold; color: ${data.color}; ${spacing.medium}">${fullName}</div>
+            <div style="${spacing.medium}">
+              ${this.getMinimalContactHtml(data)}
             </div>
             ${socialHtml}
           </div>`;
 
       case 'corporate':
         return `
-          <div style="${styles.corporate.container}">
+          <div style="font-family: Arial, sans-serif; text-align: center; border: 2px solid ${data.color}; padding: 20px; border-radius: 8px; max-width: 400px;">
             ${imageHtml}
-            <div style="${styles.corporate.name}">${fullName}</div>
+            <div style="font-size: 20px; font-weight: bold; color: ${data.color}; text-transform: uppercase; ${spacing.medium}">${fullName}</div>
             ${template.showTitle && data.title ? 
-              `<div style="${styles.corporate.title}">${data.title}</div>` : ''}
+              `<div style="font-size: 14px; color: #666; ${spacing.small}">${data.title}</div>` : ''}
             ${template.showCompany && data.company ? 
-              `<div style="${styles.corporate.company}">${data.company}</div>` : ''}
-            <div style="margin-top: 12px;">
-              ${this.getContactHtml(data, styles.corporate)}
+              `<div style="font-size: 16px; font-weight: bold; color: #333; text-transform: uppercase; ${spacing.medium}">${data.company}</div>` : ''}
+            <div style="${spacing.medium}">
+              ${this.getContactHtml(data)}
             </div>
             ${socialHtml}
           </div>`;
 
       default:
         return `
-          <table style="border-collapse: collapse;">
+          <table style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6;">
             <tr>
               ${imageHtml ? `<td style="padding-right: 20px; vertical-align: top;">${imageHtml}</td>` : ''}
               <td style="vertical-align: top;">
-                <div style="${styles[this.state.template].name}">${fullName}</div>
+                <div style="font-size: 22px; font-weight: bold; color: ${data.color}; ${spacing.medium}">${fullName}</div>
                 ${template.showTitle && data.title ? 
-                  `<div style="${styles[this.state.template].title}">${data.title}</div>` : ''}
+                  `<div style="font-size: 14px; color: #666; font-style: italic; ${spacing.small}">${data.title}</div>` : ''}
                 ${template.showCompany && data.company ? 
-                  `<div style="${styles[this.state.template].company}">${data.company}</div>` : ''}
-                <div style="margin-top: 8px;">
-                  ${this.getContactHtml(data, styles[this.state.template])}
+                  `<div style="font-size: 16px; font-weight: bold; color: #333; ${spacing.medium}">${data.company}</div>` : ''}
+                <div style="${spacing.medium}">
+                  ${this.getContactHtml(data)}
                 </div>
                 ${socialHtml}
               </td>
@@ -387,42 +376,40 @@ class SignatureStudio {
     const imageSrc = this.state.imageData || this.placeholderImage;
     const borderRadius = template.image === 'rounded' ? '50%' : '8px';
     const size = this.state.template === 'corporate' ? '90px' : '80px';
+    const margin = this.state.template === 'corporate' ? 'margin-bottom: 15px;' : '';
     
     return `<img src="${imageSrc}" 
             style="width: ${size}; height: ${size}; object-fit: cover; 
-            border-radius: ${borderRadius};" alt="Profile">`;
+            border-radius: ${borderRadius}; ${margin}" alt="Profile">`;
   }
 
-  getContactHtml(data, styles) {
+  getContactHtml(data) {
     const items = [];
+    const contactStyle = 'font-size: 14px; color: #666; margin-bottom: 5px; display: block;';
     
     if (data.email) {
       items.push(`
-        <div style="${styles.contact}">
-          <img src="${this.contactIcons.email}" 
-               style="width: 14px; height: 14px; margin-right: 6px; vertical-align: middle; opacity: 0.8;" 
-               alt="">
-          <span>${data.email}</span>
+        <div style="${contactStyle}">
+          <span style="margin-right: 8px;">${this.contactIcons.email}</span>
+          <a href="mailto:${data.email}" style="color: #666; text-decoration: none;">${data.email}</a>
         </div>
       `);
     }
     if (data.phone) {
       items.push(`
-        <div style="${styles.contact}">
-          <img src="${this.contactIcons.phone}" 
-               style="width: 14px; height: 14px; margin-right: 6px; vertical-align: middle; opacity: 0.8;" 
-               alt="">
-          <span>${data.phone}</span>
+        <div style="${contactStyle}">
+          <span style="margin-right: 8px;">${this.contactIcons.phone}</span>
+          <a href="tel:${data.phone}" style="color: #666; text-decoration: none;">${data.phone}</a>
         </div>
       `);
     }
     if (data.website) {
+      const cleanWebsite = data.website.replace(/^https?:\/\//, '').replace(/^www\./, '');
+      const websiteUrl = data.website.startsWith('http') ? data.website : `https://${data.website}`;
       items.push(`
-        <div style="${styles.contact}">
-          <img src="${this.contactIcons.website}" 
-               style="width: 14px; height: 14px; margin-right: 6px; vertical-align: middle; opacity: 0.8;" 
-               alt="">
-          <span>${data.website}</span>
+        <div style="${contactStyle}">
+          <span style="margin-right: 8px;">${this.contactIcons.website}</span>
+          <a href="${websiteUrl}" style="color: #666; text-decoration: none;" target="_blank">${cleanWebsite}</a>
         </div>
       `);
     }
@@ -430,35 +417,41 @@ class SignatureStudio {
     return items.join('');
   }
 
+  getMinimalContactHtml(data) {
+    const items = [];
+    
+    if (data.email) {
+      items.push(`${this.contactIcons.email} <a href="mailto:${data.email}" style="color: #666; text-decoration: none;">${data.email}</a>`);
+    }
+    if (data.phone) {
+      items.push(`${this.contactIcons.phone} <a href="tel:${data.phone}" style="color: #666; text-decoration: none;">${data.phone}</a>`);
+    }
+    if (data.website) {
+      const cleanWebsite = data.website.replace(/^https?:\/\//, '').replace(/^www\./, '');
+      const websiteUrl = data.website.startsWith('http') ? data.website : `https://${data.website}`;
+      items.push(`${this.contactIcons.website} <a href="${websiteUrl}" style="color: #666; text-decoration: none;" target="_blank">${cleanWebsite}</a>`);
+    }
+    
+    return items.join(' &nbsp;•&nbsp; ');
+  }
+
   getSocialHtml(data) {
     const links = [];
+    const socialStyle = 'color: #666; text-decoration: none; margin-right: 15px; font-size: 13px;';
     
-    const socialIcons = {
-      linkedin: 'https://ik.imagekit.io/dee7studio/Icons/LinkedIn.svg?updatedAt=1751101326668',
-      twitter: 'https://ik.imagekit.io/dee7studio/Icons/X.svg?updatedAt=1751101329412',
-      github: 'https://ik.imagekit.io/dee7studio/Icons/github.png?updatedAt=1751635061396',
-      instagram: 'https://ik.imagekit.io/dee7studio/Icons/Instagram.svg?updatedAt=1751100484264',
-      facebook: 'https://ik.imagekit.io/dee7studio/Icons/Facebook.svg?updatedAt=1751101326689',
-      tiktok: 'https://ik.imagekit.io/dee7studio/Icons/Tok%20Tok.svg?updatedAt=1751101326673'
-    };
-    
-    // FIX: Iterate over the defined 'this.socialPlatforms'
-    Object.entries(this.socialPlatforms).forEach(([platform, baseUrl]) => {
+    Object.entries(this.socialPlatforms).forEach(([platform, config]) => {
       if (data[platform]) {
-        const url = this.cleanUrl(data[platform], baseUrl);
-        const icon = socialIcons[platform];
+        const url = this.cleanUrl(data[platform], config.baseUrl);
         
         links.push(`
-          <a href="${url}" target="_blank" rel="noopener" 
-             style="margin-right: 8px; text-decoration: none;">
-            <img src="${icon}" alt="${platform}" 
-                 style="width: 20px; height: 20px;">
+          <a href="${url}" target="_blank" rel="noopener" style="${socialStyle}">
+            ${config.name}
           </a>
         `);
       }
     });
     
-    return links.length ? `<div style="margin-top: 12px;">${links.join('')}</div>` : '';
+    return links.length ? `<div style="margin-top: 12px; border-top: 1px solid #eee; padding-top: 10px;">${links.join('')}</div>` : '';
   }
 
   cleanUrl(url, baseUrl) {
@@ -474,44 +467,14 @@ class SignatureStudio {
   }
 
   getTemplateStyles(color) {
+    // Simplified styles - main styling now in generateSignature method
     return {
-      modern: {
-        container: `border-left: 4px solid ${color}; padding-left: 20px;`,
-        name: `font-size: 22px; font-weight: 700; color: ${color}; margin-bottom: 6px;`,
-        title: `font-size: 15px; color: #666; margin-bottom: 8px;`,
-        company: `font-size: 17px; font-weight: 600; color: #333; margin-bottom: 8px;`,
-        contact: `font-size: 14px; color: #666; margin-bottom: 4px;`
-      },
-      classic: {
-        name: `font-size: 20px; font-weight: 600; color: ${color}; margin-bottom: 5px;`,
-        title: `font-size: 14px; color: #666; font-style: italic; margin-bottom: 6px;`,
-        company: `font-size: 16px; font-weight: 600; color: #333; margin-bottom: 6px;`,
-        contact: `font-size: 14px; color: #666; margin-bottom: 4px;`
-      },
-      minimal: {
-        container: `font-family: -apple-system, sans-serif; line-height: 1.4;`,
-        name: `font-size: 18px; font-weight: 600; color: ${color}; margin-bottom: 3px;`,
-        contact: `font-size: 13px; color: #666; margin: 6px 0; display: inline-flex; align-items: center;`
-      },
-      corporate: {
-        container: `text-align: center; border: 2px solid ${color}; padding: 24px; border-radius: 8px;`,
-        name: `font-size: 20px; font-weight: 700; color: ${color}; margin-bottom: 6px; text-transform: uppercase;`,
-        title: `font-size: 14px; color: #666; margin-bottom: 8px;`,
-        company: `font-size: 18px; font-weight: 700; color: #333; margin-bottom: 10px; text-transform: uppercase;`,
-        contact: `font-size: 14px; color: #666; margin-bottom: 4px;`
-      },
-      professional: {
-        name: `font-size: 24px; font-weight: 700; color: ${color}; margin-bottom: 8px;`,
-        title: `font-size: 16px; color: #555; font-style: italic; margin-bottom: 10px;`,
-        company: `font-size: 18px; font-weight: 600; color: #333; margin-bottom: 10px;`,
-        contact: `font-size: 14px; color: #666; margin-bottom: 4px;`
-      },
-      executive: {
-        name: `font-size: 26px; font-weight: 800; color: ${color}; margin-bottom: 10px;`,
-        title: `font-size: 17px; color: #444; font-weight: 600; margin-bottom: 12px; text-transform: uppercase;`,
-        company: `font-size: 19px; font-weight: 700; color: #222; margin-bottom: 12px;`,
-        contact: `font-size: 14px; color: #666; margin-bottom: 4px;`
-      }
+      modern: { accent: color },
+      classic: { accent: color },
+      minimal: { accent: color },
+      corporate: { accent: color },
+      professional: { accent: color },
+      executive: { accent: color }
     };
   }
 
@@ -552,9 +515,22 @@ class SignatureStudio {
     let text = `${fullName}\n`;
     if (data.title) text += `${data.title}\n`;
     if (data.company) text += `${data.company}\n\n`;
-    if (data.email) text += `Email: ${data.email}\n`;
-    if (data.phone) text += `Phone: ${data.phone}\n`;
-    if (data.website) text += `Web: ${data.website}\n`;
+    if (data.email) text += `📧 ${data.email}\n`;
+    if (data.phone) text += `📱 ${data.phone}\n`;
+    if (data.website) text += `🌐 ${data.website}\n`;
+    
+    // Add social links
+    const socialLinks = [];
+    Object.entries(this.socialPlatforms).forEach(([platform, config]) => {
+      if (data[platform]) {
+        const url = this.cleanUrl(data[platform], config.baseUrl);
+        socialLinks.push(`${config.name}: ${url}`);
+      }
+    });
+    
+    if (socialLinks.length) {
+      text += `\n${socialLinks.join('\n')}`;
+    }
     
     return text;
   }
