@@ -303,7 +303,6 @@ class SignatureStudio {
     const fullName = `${data.firstName} ${data.lastName}`.trim() || 'John Doe';
     const imageHtml = this.getImageHtml(template);
     const socialHtml = this.getSocialHtml(data);
-    const styles = this.getTemplateStyles(data.color);
 
     // Add proper spacing for email clients
     const spacing = {
@@ -323,6 +322,46 @@ class SignatureStudio {
             ${socialHtml}
           </div>`;
 
+      case 'modern':
+        return `
+          <table style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6;">
+            <tr>
+              ${imageHtml ? `<td style="padding-right: 20px; vertical-align: top;">${imageHtml}</td>` : ''}
+              <td style="vertical-align: top; position: relative;">
+                <div style="border-left: 4px solid ${data.color}; padding-left: 16px;">
+                  <div style="font-size: 22px; font-weight: bold; color: ${data.color}; ${spacing.medium}">${fullName}</div>
+                  ${template.showTitle && data.title ? 
+                    `<div style="font-size: 14px; color: #666; font-style: italic; ${spacing.small}">${data.title}</div>` : ''}
+                  ${template.showCompany && data.company ? 
+                    `<div style="font-size: 16px; font-weight: bold; color: #333; ${spacing.medium}">${data.company}</div>` : ''}
+                  <div style="${spacing.medium}">
+                    ${this.getContactHtml(data)}
+                  </div>
+                  ${socialHtml}
+                </div>
+              </td>
+            </tr>
+          </table>`;
+
+      case 'classic':
+        return `
+          <table style="border-collapse: collapse; font-family: 'Times New Roman', serif; font-size: 14px; line-height: 1.6;">
+            <tr>
+              ${imageHtml ? `<td style="padding-right: 20px; vertical-align: top;">${imageHtml}</td>` : ''}
+              <td style="vertical-align: top;">
+                <div style="font-size: 20px; font-weight: bold; color: ${data.color}; ${spacing.medium}">${fullName}</div>
+                ${template.showTitle && data.title ? 
+                  `<div style="font-size: 14px; color: #666; font-style: italic; ${spacing.small}">${data.title}</div>` : ''}
+                ${template.showCompany && data.company ? 
+                  `<div style="font-size: 16px; font-weight: bold; color: #333; ${spacing.medium}">${data.company}</div>` : ''}
+                <div style="${spacing.medium}">
+                  ${this.getContactHtml(data)}
+                </div>
+                ${socialHtml}
+              </td>
+            </tr>
+          </table>`;
+
       case 'corporate':
         return `
           <div style="font-family: Arial, sans-serif; text-align: center; border: 2px solid ${data.color}; padding: 20px; border-radius: 8px; max-width: 400px;">
@@ -337,6 +376,48 @@ class SignatureStudio {
             </div>
             ${socialHtml}
           </div>`;
+
+      case 'professional':
+        return `
+          <table style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6;">
+            <tr>
+              ${imageHtml ? `<td style="padding-right: 20px; vertical-align: top;">${imageHtml}</td>` : ''}
+              <td style="vertical-align: top;">
+                <div style="border-bottom: 2px solid ${data.color}; padding-bottom: 12px; margin-bottom: 12px;">
+                  <div style="font-size: 24px; font-weight: bold; color: ${data.color}; letter-spacing: 1px; ${spacing.small}">${fullName}</div>
+                  ${template.showTitle && data.title ? 
+                    `<div style="font-size: 16px; color: #555; font-weight: 600; text-transform: capitalize; ${spacing.small}">${data.title}</div>` : ''}
+                </div>
+                ${template.showCompany && data.company ? 
+                  `<div style="font-size: 18px; font-weight: bold; color: #333; ${spacing.medium}">${data.company}</div>` : ''}
+                <div style="${spacing.medium}">
+                  ${this.getContactHtml(data)}
+                </div>
+                ${socialHtml}
+              </td>
+            </tr>
+          </table>`;
+
+      case 'executive':
+        return `
+          <table style="border-collapse: collapse; font-family: 'Georgia', serif; font-size: 14px; line-height: 1.7;">
+            <tr>
+              ${imageHtml ? `<td style="padding-right: 25px; vertical-align: top;">${imageHtml}</td>` : ''}
+              <td style="vertical-align: top;">
+                <div style="border-top: 3px solid ${data.color}; border-bottom: 1px solid ${data.color}; padding: 15px 0; margin-bottom: 15px;">
+                  <div style="font-size: 26px; font-weight: bold; color: ${data.color}; text-transform: uppercase; letter-spacing: 2px; ${spacing.small}">${fullName}</div>
+                  ${template.showTitle && data.title ? 
+                    `<div style="font-size: 17px; color: #444; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; ${spacing.small}">${data.title}</div>` : ''}
+                </div>
+                ${template.showCompany && data.company ? 
+                  `<div style="font-size: 19px; font-weight: bold; color: #222; ${spacing.medium}">${data.company}</div>` : ''}
+                <div style="${spacing.medium}">
+                  ${this.getContactHtml(data)}
+                </div>
+                ${socialHtml}
+              </td>
+            </tr>
+          </table>`;
 
       default:
         return `
