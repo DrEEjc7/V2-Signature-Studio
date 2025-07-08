@@ -543,7 +543,8 @@ class SignatureStudio {
     
     const imageSrc = this.state.imageData || this.placeholderImage;
     const borderRadius = template.image === 'rounded' ? '50%' : '8px';
-    const size = this.state.template === 'corporate' ? '90px' : '80px';
+    const config = this.sizeConfigs[this.state.size];
+    const size = this.state.template === 'corporate' ? config.imageSize.corporate : config.imageSize.default;
     const margin = this.state.template === 'corporate' ? 'margin-bottom: 15px;' : '';
     
     return `<img src="${imageSrc}" 
