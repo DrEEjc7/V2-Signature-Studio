@@ -1,40 +1,4 @@
-getImageHtml(template) {
-    if (template.image === 'hidden') return '';
-    
-    const imageSrc = this.state.imageData || this.placeholderImage;
-    const borderRadius = template.image === 'rounded' ? '50%' : '8px';
-    const config = this.sizeConfigs[this.state.size];
-    const size = this.state.template === 'corporate' ? config.imageSize.corporate : config.imageSize.default;
-    const margin = this.state.template === 'corporate' ? 'margin-bottom: 15px;' : '';
-    
-    return `<img src="${imageSrc}" 
-            style="width: ${size}; height: ${size}; object-fit: cover; 
-            border-radius: ${borderRadius}; ${margin}" alt="Profile">`;
-  }
-
-  getContactHtml(data, config) {
-    const items = [];
-    const contactStyle = `font-size: ${config.contactSize}; color: #666; margin-bottom: 5px; display: block;`;
-    
-    if (data.email) {
-      items.push(`
-        <div style="${contactStyle}">
-          <span style="margin-right: 8px;">${this.contactIcons.email}</span>
-          <a href="mailto:${data.email}" style="color: #666; text-decoration: none;">${data.email}</a>
-        </div>
-      `);
-    }
-    if (data.phone) {
-      items.push(`
-        <div style="${contactStyle}">
-          <span style="margin-right: 8px;">${this.contactIcons.phone}</span>
-          <a href="tel:${data.phone}" style="color: #666; text-decoration: none;">${data.phone}</a>
-        </div>
-      `);
-    }
-    if (data.website) {
-      const cleanWebsite = data.website.replace(/^https?:\/\//, '').replace(/^www\./, '');
-      const websiteUrl = data.website.startsWith('http') ? data.website :/**
+/**
  * Signature Studio - Professional Email Signature Generator
  * Fixed for email client compatibility - no external images
  * Version: 2.1
