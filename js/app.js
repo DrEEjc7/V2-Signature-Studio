@@ -167,14 +167,14 @@ class SignatureStudio {
     this.els.imageInput.addEventListener('change', e => this.handleImage(e));
     this.setupDragDrop();
 
-    // Template selection
+    // Template and Size selection
     this.els.templateBtns.forEach(btn => {
-      btn.addEventListener('click', () => this.selectTemplate(btn.dataset.template));
-    });
-
-    // Size selection
-    this.els.sizeBtns.forEach(btn => {
-      btn.addEventListener('click', () => this.selectSize(btn.dataset.size));
+      if (btn.dataset.template) {
+        btn.addEventListener('click', () => this.selectTemplate(btn.dataset.template));
+      }
+      if (btn.dataset.size) {
+        btn.addEventListener('click', () => this.selectSize(btn.dataset.size));
+      }
     });
 
     // View controls
@@ -296,7 +296,8 @@ class SignatureStudio {
   selectSize(size) {
     this.state.size = size;
     
-    this.els.sizeBtns.forEach(btn => {
+    // Update all size buttons
+    document.querySelectorAll('.size-btn').forEach(btn => {
       const isActive = btn.dataset.size === size;
       btn.classList.toggle('active', isActive);
       btn.setAttribute('aria-checked', isActive);
