@@ -328,7 +328,7 @@ class SignatureStudio {
             <tr>
               ${imageHtml ? `<td style="padding-right: 20px; vertical-align: top;">${imageHtml}</td>` : ''}
               <td style="vertical-align: top; position: relative;">
-                <div style="border-left: 4px solid ${data.color}; padding-left: 16px;">
+                <div style="border-left: 2px solid ${data.color}; padding-left: 16px;">
                   <div style="font-size: 22px; font-weight: bold; color: ${data.color}; ${spacing.medium}">${fullName}</div>
                   ${template.showTitle && data.title ? 
                     `<div style="font-size: 14px; color: #666; font-style: italic; ${spacing.small}">${data.title}</div>` : ''}
