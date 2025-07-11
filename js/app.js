@@ -116,6 +116,10 @@ class SignatureStudio {
       instagram: document.getElementById('instagram'),
       facebook: document.getElementById('facebook'),
       tiktok: document.getElementById('tiktok'),
+      custom1Name: document.getElementById('custom1Name'),
+      custom1Url: document.getElementById('custom1Url'),
+      custom2Name: document.getElementById('custom2Name'),
+      custom2Url: document.getElementById('custom2Url'),
       
       // UI elements
       imageInput: document.getElementById('imageInput'),
@@ -353,7 +357,11 @@ class SignatureStudio {
       github: this.els.github.value.trim(),
       instagram: this.els.instagram.value.trim(),
       facebook: this.els.facebook.value.trim(),
-      tiktok: this.els.tiktok.value.trim()
+      tiktok: this.els.tiktok.value.trim(),
+      custom1Name: this.els.custom1Name.value.trim(),
+      custom1Url: this.els.custom1Url.value.trim(),
+      custom2Name: this.els.custom2Name.value.trim(),
+      custom2Url: this.els.custom2Url.value.trim()
     };
   }
 
@@ -574,6 +582,7 @@ class SignatureStudio {
     const config = this.sizeConfigs[this.state.size];
     const socialStyle = `color: #666; text-decoration: none; margin-right: 15px; font-size: ${config.socialSize};`;
     
+    // Existing platform links
     Object.entries(this.socialPlatforms).forEach(([platform, platformConfig]) => {
       if (data[platform]) {
         const url = this.cleanUrl(data[platform], platformConfig.baseUrl);
@@ -585,6 +594,25 @@ class SignatureStudio {
         `);
       }
     });
+    
+    // Add custom links
+    if (data.custom1Name && data.custom1Url) {
+      const url = data.custom1Url.startsWith('http') ? data.custom1Url : `https://${data.custom1Url}`;
+      links.push(`
+        <a href="${url}" target="_blank" rel="noopener" style="${socialStyle}">
+          ${data.custom1Name}
+        </a>
+      `);
+    }
+    
+    if (data.custom2Name && data.custom2Url) {
+      const url = data.custom2Url.startsWith('http') ? data.custom2Url : `https://${data.custom2Url}`;
+      links.push(`
+        <a href="${url}" target="_blank" rel="noopener" style="${socialStyle}">
+          ${data.custom2Name}
+        </a>
+      `);
+    }
     
     return links.length ? `<div style="margin-top: 12px; border-top: 1px solid #eee; padding-top: 10px;">${links.join('')}</div>` : '';
   }
@@ -615,7 +643,7 @@ class SignatureStudio {
 
   updateProgress() {
     const required = ['firstName', 'lastName', 'email'];
-    const optional = ['title', 'company', 'phone', 'website', 'linkedin', 'twitter', 'github', 'instagram', 'facebook', 'tiktok'];
+    const optional = ['title', 'company', 'phone', 'website', 'linkedin', 'twitter', 'github', 'instagram', 'facebook', 'tiktok', 'custom1Name', 'custom1Url', 'custom2Name', 'custom2Url'];
     
     const filledRequired = required.filter(field => this.els[field]?.value.trim()).length;
     const filledOptional = optional.filter(field => this.els[field]?.value.trim()).length;
@@ -662,6 +690,17 @@ class SignatureStudio {
         socialLinks.push(`${config.name}: ${url}`);
       }
     });
+    
+    // Add custom links
+    if (data.custom1Name && data.custom1Url) {
+      const url = data.custom1Url.startsWith('http') ? data.custom1Url : `https://${data.custom1Url}`;
+      socialLinks.push(`${data.custom1Name}: ${url}`);
+    }
+    
+    if (data.custom2Name && data.custom2Url) {
+      const url = data.custom2Url.startsWith('http') ? data.custom2Url : `https://${data.custom2Url}`;
+      socialLinks.push(`${data.custom2Name}: ${url}`);
+    }
     
     if (socialLinks.length) {
       text += `\n${socialLinks.join('\n')}`;
