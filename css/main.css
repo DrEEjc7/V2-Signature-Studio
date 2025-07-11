@@ -364,7 +364,14 @@ kbd {
    FORM SECTIONS
 ======================================== */
 
-.form-section,
+.form-section {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  position: relative;
+}
+
 .preview-section {
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
@@ -375,7 +382,6 @@ kbd {
   overflow: hidden;
 }
 
-.form-section::before,
 .preview-section::before {
   content: '';
   position: absolute;
